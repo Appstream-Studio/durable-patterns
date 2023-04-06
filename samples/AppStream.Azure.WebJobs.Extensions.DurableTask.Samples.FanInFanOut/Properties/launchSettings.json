@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanInFanOut": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7197",
+      "launchBrowser": false
+    }
+  }
+}
