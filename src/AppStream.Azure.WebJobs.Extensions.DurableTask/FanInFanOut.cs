@@ -94,6 +94,17 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
             var waitingQueue = new Queue<TItem[]>(batches);
             var workInProgress = new List<Task<WorkerResult>>();
 
+            var status = new OrchestrationStatus
+            {
+                TotalItems = items.Count(),
+                TotalBatches = batches.Count(),
+                BatchesInQueue = waitingQueue.Count
+            };
+            if (!context.IsReplaying && options.UpdateOrchestrationStatus)
+            {
+                context.SetCustomStatus(status);
+            }
+
             while (waitingQueue.Any())
             {
                 var batchToProcess = waitingQueue.Dequeue();
@@ -103,6 +114,13 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 
                 workInProgress.Add(task);
 
+                status.BatchesInQueue = waitingQueue.Count;
+                status.BatchesInProcess = workInProgress.Count;
+                if (!context.IsReplaying && options.UpdateOrchestrationStatus)
+                {
+                    context.SetCustomStatus(status);
+                }
+
                 if (workInProgress.Count >= options.MaxParallelFunctions)
                 {
                     var completedTask = await Task.WhenAny(workInProgress);
@@ -110,12 +128,27 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 
                     results.Add(workResult);
                     workInProgress.Remove(completedTask);
+
+                    status.BatchesInProcess = workInProgress.Count;
+                    status.BatchesProcessed = results.Count;
+                    if (!context.IsReplaying && options.UpdateOrchestrationStatus)
+                    {
+                        context.SetCustomStatus(status);
+                    }
                 }
             }
 
             var remainingWorkResults = await Task.WhenAll(workInProgress);
             results.AddRange(remainingWorkResults);
             var finished = context.CurrentUtcDateTime;
+
+            status.BatchesInQueue = 0;
+            status.BatchesInProcess = 0;
+            status.BatchesProcessed = results.Count;
+            if (!context.IsReplaying && options.UpdateOrchestrationStatus)
+            {
+                context.SetCustomStatus(status);
+            }
 
             var activityResults = results
                 .Select(r => new ActivityFunctionResult<TBatchResult?>(
