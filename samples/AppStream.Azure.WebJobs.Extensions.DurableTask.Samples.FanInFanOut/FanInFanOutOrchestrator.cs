@@ -24,10 +24,18 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanInFanOut
         public async Task RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext context)
         {
-            var result = await _fanInFanOut.FanInFanOutAsync<FooItem, List<string>, IDependency>(
+            var result = await _fanInFanOut.FanInFanOutAsync(
                 context: context,
                 items: new[] { new FooItem("1"), new FooItem("2"), new FooItem("3"), new FooItem("4") },
-                activity: FanInFanOutActivity,
+                activity: (IEnumerable<FooItem> items, IDependency dependency) =>
+                {
+                    foreach (var i in items)
+                    {
+                        dependency.DoStuff(i);
+                    }
+
+                    return Task.FromResult(items.Select(i => i.Name).ToList());
+                },
                 options: new FanInFanOutOptions
                 {
                     MaxBatchSize = 2,
@@ -47,23 +55,12 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanInFanOut
             Console.WriteLine($"total duration: {result.Duration}");
         }
 
-        private Task<List<string>> FanInFanOutActivity(IEnumerable<FooItem> items, IDependency dependency)
-        {
-            foreach (var i in items)
-            {
-                dependency.DoStuff(i);
-            }
-
-            return Task.FromResult(items.Select(i => i.Name).ToList());
-        }
-
         [FunctionName("Orchestrator_HttpStart")]
         public async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter,
             ILogger log)
         {
-            // Function input comes from the request content.
             string instanceId = await starter.StartNewAsync("Orchestrator", null);
 
             log.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);

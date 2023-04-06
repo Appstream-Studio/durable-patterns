@@ -1,4 +1,4 @@
-﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Internal
+﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 {
     internal interface IActivityBag
     {

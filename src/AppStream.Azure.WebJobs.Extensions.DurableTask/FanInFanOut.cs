@@ -1,4 +1,4 @@
-﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.Internal;
+﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Newtonsoft.Json.Linq;
 
@@ -98,7 +98,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
             {
                 var batchToProcess = waitingQueue.Dequeue();
                 var task = context.CallActivityAsync<WorkerResult>(
-                    WorkerFunction.FunctionName,
+                    WorkerFunction.WorkerFunction.FunctionName,
                     new WorkerInput(fanInFanOutId, batchToProcess));
 
                 workInProgress.Add(task);

@@ -1,7 +1,7 @@
-﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.Internal.Exceptions;
+﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.ActivityInvoker.DependencyResolver.Exceptions;
 using System.Reflection;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Internal
+namespace AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.ActivityInvoker.DependencyResolver
 {
     internal class DependencyResolver : IDependencyResolver
     {

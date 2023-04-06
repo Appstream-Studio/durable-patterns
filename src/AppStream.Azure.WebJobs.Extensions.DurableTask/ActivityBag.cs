@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Internal
+namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 {
     internal class ActivityBag : IActivityBag
     {

@@ -1,41 +1,23 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.ActivityInvoker.DependencyResolver;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
+using System.Reflection;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Internal
+namespace AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.ActivityInvoker
 {
-    internal class WorkerFunction
+    internal class ActivityInvoker : IActivityInvoker
     {
-        public const string FunctionName = "WorkerFunction";
-
-        private readonly IActivityBag _activityBag;
         private readonly IDependencyResolver _dependencyResolver;
 
-        public WorkerFunction(IActivityBag activityBag, IDependencyResolver dependencyResolver)
+        public ActivityInvoker(IDependencyResolver dependencyResolver)
         {
-            _activityBag = activityBag;
             _dependencyResolver = dependencyResolver;
         }
 
-        [FunctionName(FunctionName)]
-        public async Task<WorkerResult> RunWorker(
-            [ActivityTrigger] IDurableActivityContext context)
+        public async Task<object?> InvokeActivityAsync(MulticastDelegate activity, IEnumerable<object> activityArg)
         {
-            var sw = Stopwatch.StartNew();
-            var input = context.GetInput<WorkerInput>();
-            var activity = _activityBag.Get(input.ActivityId);
-
             var activityParameters = activity.Method.GetParameters();
-            var itemCollectionType = activityParameters[0].ParameterType;
-            var itemType = itemCollectionType.GetGenericArguments()[0];
+            var convertedItems = ConvertActivityArgument(activity, activityArg, activityParameters[0]);
 
-            var convertedItems = typeof(WorkerFunction)
-                .GetMethod(nameof(CastItems))!
-                .MakeGenericMethod(itemType)
-                .Invoke(null, new object[] { input.Items })!;
-
-            // todo: co jeśli nie ma dependencies?
             var dependencyParameters = activityParameters[1..];
             var dependencies = _dependencyResolver.Resolve(dependencyParameters);
 
@@ -54,13 +36,25 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Internal
                 var taskType = task.GetType();
                 if (taskType.IsGenericType && taskType.GetGenericTypeDefinition() == typeof(Task<>))
                 {
-                    var resultType = taskType.GetGenericArguments()[0];
                     var resultProperty = taskType.GetProperty("Result")!;
                     activityResult = resultProperty.GetValue(task);
                 }
             }
 
-            return new WorkerResult(activityResult, sw.Elapsed);
+            return activityResult;
+        }
+
+        private static object ConvertActivityArgument(
+            MulticastDelegate activity,
+            IEnumerable<object> activityArg,
+            ParameterInfo parameterInfo)
+        {
+            var itemType = parameterInfo.ParameterType.GetGenericArguments()[0];
+
+            return typeof(ActivityInvoker)
+                .GetMethod(nameof(CastItems))!
+                .MakeGenericMethod(itemType)
+                .Invoke(null, new object[] { activityArg })!;
         }
 
         public static IEnumerable<TItem> CastItems<TItem>(IEnumerable<object> items)
