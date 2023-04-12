@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7245",
+      "launchBrowser": false
+    }
+  }
+}
