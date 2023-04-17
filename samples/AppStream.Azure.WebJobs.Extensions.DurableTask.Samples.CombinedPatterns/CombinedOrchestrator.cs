@@ -24,6 +24,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
             [OrchestrationTrigger] IDurableOrchestrationContext context)
         {
             var executionResult = await _patterns
+                .WithContext(context)
                 .RunActivity((IFooItemRepository repository) => repository.GetFooItemsAsync())
                 .WithEnumerableResults<FooItem>()
                 .FanOutFanIn(
@@ -49,7 +50,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
 
                         return items.ToArray();
                     })
-                .ExecuteAsync(context);
+                .ExecuteAsync();
 
             return executionResult;
         }

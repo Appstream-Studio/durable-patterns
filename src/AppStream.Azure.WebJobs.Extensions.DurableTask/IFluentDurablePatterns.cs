@@ -4,6 +4,11 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 {
     public interface IFluentDurablePatterns
     {
+        IFluentDurablePatternsWithContext WithContext(IDurableOrchestrationContext context);
+    }
+
+    public interface IFluentDurablePatternsWithContext
+    {
         // result determines input of the next invocation so it should be a generic type argument?
         IFluentDurablePatternsContinuation<TResult> RunActivity<TResult>(Func<Task<TResult>> activity);
         #region dependencies
@@ -20,7 +25,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
     public interface IFluentDurablePatternsContinuation<TPreviousResult> : IExecutableDurablePatterns
     {
         IFluentDurablePatternsContinuation<TResult> RunActivity<TResult>(Func<TPreviousResult, TResult> activity);
-        IFluentDurablePatternsEnumerableContinuation<TResultItem> WithEnumerableResults<TResultItem>(); // ???
+        IFluentDurablePatternsEnumerableContinuation<TResultItem> WithEnumerableResults<TResultItem>();
     }
 
     public interface IFluentDurablePatternsEnumerableContinuation<TPreviousResultItem> : IExecutableDurablePatterns
@@ -33,6 +38,6 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 
     public interface IExecutableDurablePatterns
     {
-        Task<PatternsExecutionResult> ExecuteAsync(IDurableOrchestrationContext context);
+        Task<PatternsExecutionResult> ExecuteAsync();
     }
 }

@@ -1,4 +1,4 @@
 ﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction
 {
-    internal record WorkerResult(object? ActivityResult, TimeSpan Duration);
+    internal record WorkerResult(IEnumerable<object> Result, TimeSpan Duration);
 }

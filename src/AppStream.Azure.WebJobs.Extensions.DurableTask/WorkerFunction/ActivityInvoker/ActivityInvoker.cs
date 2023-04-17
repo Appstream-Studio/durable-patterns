@@ -13,7 +13,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.Activity
             _dependencyResolver = dependencyResolver;
         }
 
-        public async Task<object?> InvokeActivityAsync(MulticastDelegate activity, IEnumerable<object> activityArg)
+        public async Task<IEnumerable<object>> InvokeActivityAsync(MulticastDelegate activity, IEnumerable<object> activityArg)
         {
             var activityParameters = activity.Method.GetParameters();
             var convertedItems = ConvertActivityArgument(activity, activityArg, activityParameters[0]);
@@ -41,7 +41,10 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.WorkerFunction.Activity
                 }
             }
 
-            return activityResult;
+            var resultCollectionType = activityResult!.GetType();
+            var resultCollectionItemType = resultCollectionType.GetElementType();
+
+
         }
 
         private static object ConvertActivityArgument(

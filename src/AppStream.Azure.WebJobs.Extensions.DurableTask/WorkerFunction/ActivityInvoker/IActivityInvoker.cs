@@ -2,6 +2,6 @@
 {
     internal interface IActivityInvoker
     {
-        Task<object?> InvokeActivityAsync(MulticastDelegate activity, IEnumerable<object> activityArg);
+        Task<IEnumerable<object>> InvokeActivityAsync(MulticastDelegate activity, IEnumerable<object> activityArg);
     }
 }

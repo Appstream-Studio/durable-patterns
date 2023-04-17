@@ -1,42 +1,71 @@
-﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask
+﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.Executor;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+
+namespace AppStream.Azure.WebJobs.Extensions.DurableTask
 {
-    internal class FluentDurablePatterns : IFluentDurablePatterns
+    internal class FluentDurablePatterns : IFluentDurablePatterns, IFluentDurablePatternsWithContext
     {
         private readonly IActivityBag _activityBag;
+        private readonly IStepsExecutor _stepsExecutor;
+        private readonly List<Step> _steps = new();
 
-        public FluentDurablePatterns(IActivityBag activityBag)
+        private IDurableOrchestrationContext? _context;
+
+        private IDurableOrchestrationContext Context
+        {
+            get
+            {
+                if (_context == null)
+                {
+                    throw new ContextNotSetException();
+                }
+
+                return _context;
+            }
+        }
+
+        public FluentDurablePatterns(IActivityBag activityBag, IStepsExecutor stepsExecutor)
         {
             _activityBag = activityBag;
+            _stepsExecutor = stepsExecutor;
         }
 
-        public IFluentDurablePatternsEnumerableContinuation FanOutFanIn<TInputItem, TResultItem>(IEnumerable<TInputItem> items, Func<IEnumerable<TInputItem>, IEnumerable<TResultItem>> activity, FanOutFanInOptions options)
+        public IFluentDurablePatternsWithContext WithContext(IDurableOrchestrationContext context)
         {
-            throw new NotImplementedException();
+            _context ??= context;
+            return this;
         }
 
-        public IFluentDurablePatternsContinuation RunActivity<TResult>(Func<Task<TResult>> activity)
+        public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult>(Func<Task<TResult>> activity)
+            => RunActivityInternal<TResult>(activity);
+
+        public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult, TDep1>(Func<TDep1, Task<TResult>> activity)
+            => RunActivityInternal<TResult>(activity);
+
+        public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult, TDep1, TDep2>(Func<TDep1, TDep2, Task<TResult>> activity)
+            => RunActivityInternal<TResult>(activity);
+
+        private IFluentDurablePatternsContinuation<TResult> RunActivityInternal<TResult>(MulticastDelegate activity)
         {
-            // jak będzie wyglądać konfiguracja całego flow w pamięci?
-            /*
-             *  {
-             *      steps: [
-             *          {
-             *              stepId: guid, // activity is saved to the bag with the same id
-             *              stepType: enum: ActivityFunction, FanOutFanIn
-             *          }
-             *      ]
-             *  }
-             */
+            var step = new Step(Context.NewGuid(), StepType.ActivityFunction);
+
+            _steps.Add(step);
+            _activityBag.Add(step.StepId, activity);
+
+            return new FluentDurablePatternsContinuation<TResult>(_activityBag, Context, _stepsExecutor, _steps);
         }
 
-        public IFluentDurablePatternsContinuation RunActivity<TResult, TDep1>(Func<TDep1, Task<TResult>> activity)
-        {
-            throw new NotImplementedException();
-        }
+        public IFluentDurablePatternsEnumerableContinuation<TResultItem> FanOutFanIn<TInputItem, TResultItem>(IEnumerable<TInputItem> items, Func<IEnumerable<TInputItem>, IEnumerable<TResultItem>> activity, FanOutFanInOptions options)
+            => FanOutFanInInternal<TResultItem>(activity);
 
-        public IFluentDurablePatternsContinuation RunActivity<TResult, TDep1, TDep2>(Func<TDep1, TDep2, Task<TResult>> activity)
+        private IFluentDurablePatternsEnumerableContinuation<TResultItem> FanOutFanInInternal<TResultItem>(MulticastDelegate activity)
         {
-            throw new NotImplementedException();
+            var step = new Step(Context.NewGuid(), StepType.FanOutFanIn);
+
+            _steps.Add(step);
+            _activityBag.Add(step.StepId, activity);
+
+            return new FluentDurablePatternsEnumerableContinuation<TResultItem>(_activityBag, Context, _stepsExecutor, _steps);
         }
     }
 }
