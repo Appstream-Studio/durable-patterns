@@ -1,10 +1,15 @@
-﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask
+﻿namespace AppStream.DurablePatterns
 {
     internal static class TypeEnumerableExtensions
     {
-        public static bool IsEnumerable(this Type collectionType)
+        public static bool IsCollection(this Type collectionType)
         {
-            if (collectionType.IsInterface && collectionType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (collectionType.IsArray)
+            {
+                return false;
+            }
+
+            if (collectionType.IsInterface && collectionType.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
                 return true;
             }
@@ -12,7 +17,7 @@
             foreach (Type interfaceType in collectionType.GetInterfaces())
             {
                 if (interfaceType.IsGenericType
-                    && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    && interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     return true;
                 }
@@ -26,7 +31,7 @@
             return collectionType.GetElementType() == elementType;
         }
 
-        public static Type? GetElementType(this Type collectionType)
+        public static Type? GetCollectionElementType(this Type collectionType)
         {
             if (collectionType.IsInterface && collectionType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {

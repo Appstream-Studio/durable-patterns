@@ -11,7 +11,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanInFanOut
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services
-                .AddFanInFanOut()
+                //.AddFanInFanOut()
                 .AddTransient<IDependency, Dependency>();
         }
     }

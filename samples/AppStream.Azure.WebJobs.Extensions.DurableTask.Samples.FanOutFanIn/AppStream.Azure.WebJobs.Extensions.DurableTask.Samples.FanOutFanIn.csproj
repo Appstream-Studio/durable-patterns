@@ -10,12 +10,12 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.9.0" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.9.4" />
 		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\AppStream.Azure.WebJobs.Extensions.DurableTask\AppStream.Azure.WebJobs.Extensions.DurableTask.csproj" />
+		<ProjectReference Include="..\..\src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

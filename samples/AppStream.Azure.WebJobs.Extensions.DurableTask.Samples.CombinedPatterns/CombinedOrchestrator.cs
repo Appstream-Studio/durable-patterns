@@ -1,10 +1,9 @@
+using AppStream.DurablePatterns.Builder;
+using AppStream.DurablePatterns.Executor;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -20,42 +19,20 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
         }
 
         [FunctionName("CombinedOrchestrator")]
-        public async Task<PatternsExecutionResult> RunOrchestrator(
+        public async Task<ExecutionResult> RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext context)
         {
             var executionResult = await _patterns
                 .WithContext(context)
-                .RunActivity((IFooItemRepository repository) => repository.GetFooItemsAsync())
-                .WithEnumerableResults<FooItem>()
-                .FanOutFanIn(
-                    (items) =>
-                    {
-                        Console.WriteLine("this block of code is executed in parallel batches");
-                        foreach (var item in items)
-                        {
-                            Console.WriteLine($"hello {item}");
-                        }
-
-                        return items;
-                    },
-                    new FanOutFanInOptions())
-                .RunActivity(
-                    (items) =>
-                    {
-                        Console.WriteLine("this block of code is executed in a single activity function");
-                        foreach (var item in items)
-                        {
-                            Console.WriteLine($"hello {item}");
-                        }
-
-                        return items.ToArray();
-                    })
+                .RunActivity<GetFooItemsActivity>()
+                .FanOutFanIn<FanOutActivity>(new FanOutFanInOptions(
+                    BatchSize: 2, 
+                    ParallelActivityFunctionsCap: 2))
+                .RunActivity<FanInActivity>()
                 .ExecuteAsync();
 
             return executionResult;
         }
-
-
 
         [FunctionName("CombinedOrchestrator_HttpStart")]
         public static async Task<HttpResponseMessage> HttpStart(

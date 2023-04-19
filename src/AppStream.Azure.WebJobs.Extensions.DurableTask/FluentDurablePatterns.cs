@@ -1,4 +1,5 @@
 ﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.Executor;
+using AppStream.Azure.WebJobs.Extensions.DurableTask.PatternActivity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.Azure.WebJobs.Extensions.DurableTask
@@ -39,12 +40,6 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
         public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult>(Func<Task<TResult>> activity)
             => RunActivityInternal<TResult>(activity);
 
-        public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult, TDep1>(Func<TDep1, Task<TResult>> activity)
-            => RunActivityInternal<TResult>(activity);
-
-        public IFluentDurablePatternsContinuation<TResult> RunActivity<TResult, TDep1, TDep2>(Func<TDep1, TDep2, Task<TResult>> activity)
-            => RunActivityInternal<TResult>(activity);
-
         private IFluentDurablePatternsContinuation<TResult> RunActivityInternal<TResult>(MulticastDelegate activity)
         {
             var step = new Step(Context.NewGuid(), StepType.ActivityFunction);
@@ -66,6 +61,37 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask
             _activityBag.Add(step.StepId, activity);
 
             return new FluentDurablePatternsEnumerableContinuation<TResultItem>(_activityBag, Context, _stepsExecutor, _steps);
+        }
+
+        public IFluentDurablePatternsEnumerableContinuation<TResultItem> RunActivity<TResultItem>(Func<Task<IEnumerable<TResultItem>>> activity)
+        {
+            var step = new Step(Context.NewGuid(), StepType.ActivityFunction);
+
+            _steps.Add(step);
+            _activityBag.Add(step.StepId, activity);
+
+            return new FluentDurablePatternsEnumerableContinuation<TResultItem>(_activityBag, Context, _stepsExecutor, _steps);
+        }
+
+        public IFluentDurablePatternsContinuation<TResult> RunActivity<TActivity, TResult>() where TActivity : IPatternActivity<TResult>
+        {
+            // zapisujemy step id oraz TActivity do wora
+
+            throw new NotImplementedException();
+        }
+
+        public IFluentDurablePatternsEnumerableContinuation<TResultCollectionItem> RunActivity<TActivity, TResultCollection, TResultCollectionItem>()
+            where TActivity : IPatternCollectionActivity<TResultCollection, TResultCollectionItem>
+            where TResultCollection : IEnumerable<TResultCollectionItem>
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFluentDurablePatternsEnumerableContinuation<TResultCollectionItem> FanOutFanIn<TActivity, TResultCollection, TResultCollectionItem>()
+            where TActivity : IPatternCollectionActivity<TResultCollection, TResultCollectionItem>
+            where TResultCollection : IEnumerable<TResultCollectionItem>
+        {
+            throw new NotImplementedException();
         }
     }
 }

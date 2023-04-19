@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.Azure.WebJobs.Extensions.DurableTask", "src\AppStream.Azure.WebJobs.Extensions.DurableTask\AppStream.Azure.WebJobs.Extensions.DurableTask.csproj", "{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5128B8E-5406-460E-AA75-D82972696306}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D950A935-3C94-41FF-B74E-599E68CAB5ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn", "samples\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn.csproj", "{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns", "samples\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns.csproj", "{2CD96E66-61D6-4845-81DA-21A1DCE80DFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns", "samples\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns.csproj", "{F88C93CA-4339-4E18-86D1-D0354CD54CC7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.DurablePatterns", "src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj", "{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3666CA37-BCFD-4D2C-9E74-ABD8C5B44782}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppStream.DurablePatterns.Tests", "AppStream.DurablePatterns.Tests\AppStream.DurablePatterns.Tests.csproj", "{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,26 +23,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CD96E66-61D6-4845-81DA-21A1DCE80DFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CD96E66-61D6-4845-81DA-21A1DCE80DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CD96E66-61D6-4845-81DA-21A1DCE80DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CD96E66-61D6-4845-81DA-21A1DCE80DFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{8D01984F-66B6-4FE0-AEEB-6ABDED54B4EA} = {F5128B8E-5406-460E-AA75-D82972696306}
 		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0} = {D950A935-3C94-41FF-B74E-599E68CAB5ED}
-		{2CD96E66-61D6-4845-81DA-21A1DCE80DFA} = {D950A935-3C94-41FF-B74E-599E68CAB5ED}
+		{F88C93CA-4339-4E18-86D1-D0354CD54CC7} = {D950A935-3C94-41FF-B74E-599E68CAB5ED}
+		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14} = {F5128B8E-5406-460E-AA75-D82972696306}
+		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2} = {3666CA37-BCFD-4D2C-9E74-ABD8C5B44782}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1AF3B78-2C23-4B8E-9D8F-F25C7DD1207F}

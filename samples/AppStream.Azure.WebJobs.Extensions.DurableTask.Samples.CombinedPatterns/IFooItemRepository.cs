@@ -5,6 +5,6 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
 {
     internal interface IFooItemRepository
     {
-        Task<FooItem[]> GetFooItemsAsync();
+        Task<List<FooItem>> GetFooItemsAsync();
     }
 }

@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns
 {
     internal class FooItemRepository : IFooItemRepository
     {
-        public Task<FooItem[]> GetFooItemsAsync()
+        public Task<List<FooItem>> GetFooItemsAsync()
         {
-            return Task.FromResult(new[]
+            return Task.FromResult(new List<FooItem>
             {
                 new FooItem("foo-item-1"),
                 new FooItem("foo-item-2"),
