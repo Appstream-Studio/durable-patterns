@@ -19,7 +19,7 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             _logger.LogInformation("this block of code is executed in parallel batches");
             foreach (var item in input)
             {
-                _logger.LogInformation($"hello {item.Name} from fan out activity");
+                _logger.LogInformation($"\thello {item.Name} from fan out activity");
             }
 
             return Task.FromResult(input);

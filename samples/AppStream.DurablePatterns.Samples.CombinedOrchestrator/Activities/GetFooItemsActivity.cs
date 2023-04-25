@@ -20,7 +20,7 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
 
         public Task<List<FooItem>> RunAsync(object? input)
         {
-            _logger.LogInformation("Getting foo items from repository");
+            _logger.LogInformation("getting foo items from repository");
             return _repository.GetFooItemsAsync();
         }
     }

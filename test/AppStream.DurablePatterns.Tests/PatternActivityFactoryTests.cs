@@ -23,27 +23,36 @@ namespace AppStream.DurablePatterns.Tests
         [Test]
         public void Create_WithNullPatternActivityType_ThrowsArgumentNullException()
         {
+            // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _patternActivityFactory.Create<int, string>(null!));
         }
 
         [Test]
         public void Create_WithInvalidPatternActivityType_ThrowsUnexpectedPatternActivityTypeException()
         {
+            // Act & Assert
             Assert.Throws<UnexpectedPatternActivityTypeException>(() => _patternActivityFactory.Create<int, string>(typeof(string)));
         }
 
         [Test]
         public void Create_WithUnregisteredPatternActivityType_ThrowsActivityNotRegisteredException()
         {
+            // Act & Assert
             Assert.Throws<ActivityNotRegisteredException>(() => _patternActivityFactory.Create<double, int>(typeof(DoubleToIntActivity)));
         }
 
         [Test]
         public void Create_WithValidPatternActivityType_ReturnsPatternActivity()
         {
+            // Act
             var patternActivity = _patternActivityFactory.Create<int, string>(typeof(IntToStringActivity));
-            Assert.That(patternActivity, Is.Not.Null);
-            Assert.That(patternActivity, Is.InstanceOf<IPatternActivity<int, string>>());
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(patternActivity, Is.Not.Null);
+                Assert.That(patternActivity, Is.InstanceOf<IPatternActivity<int, string>>());
+            });
         }
     }
 

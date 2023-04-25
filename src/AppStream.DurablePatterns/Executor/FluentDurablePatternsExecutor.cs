@@ -62,6 +62,7 @@ namespace AppStream.DurablePatterns.Executor
                         fofi.AverageItemProcessingDuration,
                         fofi.BatchesProcessed,
                         fofi.ItemsProcessed),
+
                     StepExecutionResult res => new StepExecutionResultSummary(
                         res.StepType.ToString(),
                         res.Duration)
