@@ -13,8 +13,16 @@ using System.Reflection;
 
 namespace AppStream.DurablePatterns
 {
+    /// <summary>
+    /// Extension methods for registering required dependencies of the durable patterns library.
+    /// </summary>
     public static class DurablePatternsServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds all required services for the durable patterns library to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+        /// <returns>The <see cref="IServiceCollection"/> with the newly added services.</returns>
         public static IServiceCollection AddDurablePatterns(this IServiceCollection services) 
         {
             return services
@@ -30,6 +38,12 @@ namespace AppStream.DurablePatterns
                 .AddSingleton<IFanOutFanInOptionsValidator, FanOutFanInOptionsValidator>();
         }
 
+        /// <summary>
+        /// Scans the specified <paramref name="assembly"/> for implementations of the <see cref="IPatternActivity{TInput, TResult}"/> interface and adds them to the <paramref name="services"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+        /// <param name="assembly">The <see cref="Assembly"/> to scan for implementations of the <see cref="IPatternActivity{TInput, TResult}"/> interface.</param>
+        /// <returns>The <see cref="IServiceCollection"/> with the newly added services.</returns>
         public static IServiceCollection AddDurablePatternsActivitiesFromAssembly(this IServiceCollection services, Assembly assembly) 
         {
             var patternActivityTypes = ScanAssemblies(new[] { assembly }, typeof(IPatternActivity<,>));
@@ -42,6 +56,12 @@ namespace AppStream.DurablePatterns
             return services;
         }
 
+        /// <summary>
+        /// Scans the specified <paramref name="assemblies"/> for types that match the specified <paramref name="openGenericType"/> and returns a collection of matching types.
+        /// </summary>
+        /// <param name="assemblies">The collection of <see cref="Assembly"/> instances to scan.</param>
+        /// <param name="openGenericType">The open generic type to match.</param>
+        /// <returns>A collection of matching types.</returns>
         private static IEnumerable<Type> ScanAssemblies(Assembly[] assemblies, Type openGenericType)
         {
             var allTypes = assemblies.Distinct().SelectMany(a => a.GetTypes());
