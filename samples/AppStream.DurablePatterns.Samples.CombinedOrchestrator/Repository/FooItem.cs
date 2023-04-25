@@ -1,4 +1,4 @@
-﻿namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns
+﻿namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Repository
 {
     public class FooItem
     {

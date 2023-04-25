@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns
+namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Repository
 {
     internal interface IFooItemRepository
     {

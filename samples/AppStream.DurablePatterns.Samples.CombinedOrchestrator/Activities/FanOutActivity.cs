@@ -1,9 +1,9 @@
-﻿using AppStream.DurablePatterns;
+﻿using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Repository;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns
+namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
 {
     internal class FanOutActivity : IPatternActivity<List<FooItem>, List<FooItem>>
     {

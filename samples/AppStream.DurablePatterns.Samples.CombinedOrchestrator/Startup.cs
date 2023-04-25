@@ -1,6 +1,8 @@
 ﻿using AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using AppStream.DurablePatterns;
+using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities;
+using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Repository;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

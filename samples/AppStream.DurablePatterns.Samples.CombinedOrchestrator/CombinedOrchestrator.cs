@@ -1,5 +1,6 @@
 using AppStream.DurablePatterns.Builder;
 using AppStream.DurablePatterns.Executor;
+using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
