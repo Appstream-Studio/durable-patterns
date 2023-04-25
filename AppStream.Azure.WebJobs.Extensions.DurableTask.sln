@@ -7,15 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5128B8E-540
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D950A935-3C94-41FF-B74E-599E68CAB5ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn", "samples\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.FanOutFanIn.csproj", "{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns", "samples\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns\AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns.csproj", "{F88C93CA-4339-4E18-86D1-D0354CD54CC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.DurablePatterns.Samples.CombinedOrchestrator", "samples\AppStream.DurablePatterns.Samples.CombinedOrchestrator\AppStream.DurablePatterns.Samples.CombinedOrchestrator.csproj", "{F88C93CA-4339-4E18-86D1-D0354CD54CC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.DurablePatterns", "src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj", "{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3666CA37-BCFD-4D2C-9E74-ABD8C5B44782}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppStream.DurablePatterns.Tests", "AppStream.DurablePatterns.Tests\AppStream.DurablePatterns.Tests.csproj", "{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStream.DurablePatterns.Tests", "test\AppStream.DurablePatterns.Tests\AppStream.DurablePatterns.Tests.csproj", "{CE73E323-689B-40A4-BB95-79A7F0D5EAB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F88C93CA-4339-4E18-86D1-D0354CD54CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,7 +38,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E3484614-02FA-4BB3-9F7D-B24ABD97B0B0} = {D950A935-3C94-41FF-B74E-599E68CAB5ED}
 		{F88C93CA-4339-4E18-86D1-D0354CD54CC7} = {D950A935-3C94-41FF-B74E-599E68CAB5ED}
 		{DE9C1A04-E0D4-4872-91FC-2D2DB08FED14} = {F5128B8E-5406-460E-AA75-D82972696306}
 		{CE73E323-689B-40A4-BB95-79A7F0D5EAB2} = {3666CA37-BCFD-4D2C-9E74-ABD8C5B44782}

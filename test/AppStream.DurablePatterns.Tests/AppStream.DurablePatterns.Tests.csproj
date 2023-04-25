@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj" />
+    <ProjectReference Include="..\..\src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj" />
   </ItemGroup>
 
 </Project>

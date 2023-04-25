@@ -3,6 +3,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<AzureFunctionsVersion>v4</AzureFunctionsVersion>
 		<Nullable>enable</Nullable>
+		
+		<!-- It is crucial to include this property -->
 		<FunctionsInDependencies>true</FunctionsInDependencies>
 	</PropertyGroup>
 	<ItemGroup>
