@@ -7,7 +7,7 @@ namespace AppStream.DurablePatterns.Tests
     public class PatternActivityFactoryTests
     {
         private IServiceProvider _serviceProvider;
-        private IPatternActivityFactory _patternActivityFactory;
+        private PatternActivityFactory _patternActivityFactory;
 
         [SetUp]
         public void Setup()
@@ -23,7 +23,7 @@ namespace AppStream.DurablePatterns.Tests
         [Test]
         public void Create_WithNullPatternActivityType_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _patternActivityFactory.Create<int, string>(null));
+            Assert.Throws<ArgumentNullException>(() => _patternActivityFactory.Create<int, string>(null!));
         }
 
         [Test]
@@ -42,8 +42,8 @@ namespace AppStream.DurablePatterns.Tests
         public void Create_WithValidPatternActivityType_ReturnsPatternActivity()
         {
             var patternActivity = _patternActivityFactory.Create<int, string>(typeof(IntToStringActivity));
-            Assert.IsNotNull(patternActivity);
-            Assert.IsInstanceOf<IPatternActivity<int, string>>(patternActivity);
+            Assert.That(patternActivity, Is.Not.Null);
+            Assert.That(patternActivity, Is.InstanceOf<IPatternActivity<int, string>>());
         }
     }
 

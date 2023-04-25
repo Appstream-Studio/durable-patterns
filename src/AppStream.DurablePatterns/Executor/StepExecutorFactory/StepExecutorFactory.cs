@@ -30,7 +30,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutorFactory
         private IStepExecutor GetRequiredService<TExecutor>()
             where TExecutor : IStepExecutor
         {
-            var executor = _serviceProvider.GetRequiredService<TExecutor>() 
+            var executor = _serviceProvider.GetService<TExecutor>() 
                 ?? throw new StepExecutorNotRegisteredException(typeof(TExecutor));
  
             return executor;

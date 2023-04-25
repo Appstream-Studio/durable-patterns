@@ -19,6 +19,16 @@ namespace AppStream.DurablePatterns.Executor
             IEnumerable<StepConfiguration> steps,
             IDurableOrchestrationContext context)
         {
+            if (steps == null)
+            {
+                throw new ArgumentNullException(nameof(steps));
+            }
+
+            if (!steps.Any()) 
+            {
+                throw new ArgumentException("Steps collection cannot be empty.", nameof(steps));
+            }
+
             var results = new Stack<StepExecutionResult>();
 
             foreach (var step in steps)
