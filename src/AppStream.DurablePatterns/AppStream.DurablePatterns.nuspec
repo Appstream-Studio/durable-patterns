@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>AppStream.DurablePatterns</id>
+		<version>1.0.0</version>
+		<authors>https://appstream.studio/</authors>
+		<owners>https://appstream.studio/</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Fluent Patterns is a .NET library that simplifies usage of the Durable Function framework when leveraging main use patterns.</description>
+		<releaseNotes>Initial release.</releaseNotes>
+	</metadata>
+</package>
