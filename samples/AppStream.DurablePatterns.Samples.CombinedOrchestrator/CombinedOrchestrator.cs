@@ -1,5 +1,4 @@
-using AppStream.DurablePatterns.Builder;
-using AppStream.DurablePatterns.Executor;
+using AppStream.DurablePatterns;
 using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -20,10 +19,10 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
         }
 
         [FunctionName("CombinedOrchestrator")]
-        public async Task<ExecutionResult> RunOrchestrator(
+        public Task<ExecutionResult> RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext context)
         {
-            var executionResult = await _patterns
+            return _patterns
                 .WithContext(context)
                 .RunActivity<GetFooItemsActivity>()
                 .FanOutFanIn<FanOutActivity>(new FanOutFanInOptions(
@@ -31,8 +30,6 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
                     ParallelActivityFunctionsCap: 2))
                 .RunActivity<FanInActivity>()
                 .ExecuteAsync();
-
-            return executionResult;
         }
 
         [FunctionName("CombinedOrchestrator_HttpStart")]

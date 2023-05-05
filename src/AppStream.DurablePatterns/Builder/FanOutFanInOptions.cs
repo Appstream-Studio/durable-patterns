@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace AppStream.DurablePatterns.Builder
+namespace AppStream.DurablePatterns
 {
     /// <summary>
     /// Provides options for configuring the behavior of the FanOutFanIn operation.

@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace AppStream.DurablePatterns.Executor
+namespace AppStream.DurablePatterns
 {
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class ExecutionResult

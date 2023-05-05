@@ -1,7 +1,8 @@
-﻿using AppStream.DurablePatterns.Executor;
+﻿using AppStream.DurablePatterns.Builder;
+using AppStream.DurablePatterns.Executor;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
-namespace AppStream.DurablePatterns.Builder
+namespace AppStream.DurablePatterns
 {
     /// <summary>
     /// Durable Functions patterns fluent API entry point.
