@@ -1,4 +1,5 @@
 [![License](https://img.shields.io/badge/license-apache-green)](https://github.com/Appstream-Studio/durable-patterns/blob/main/LICENSE)
+[![NuGet Package](https://img.shields.io/nuget/v/appstream.durablepatterns.svg)](https://www.nuget.org/packages/AppStream.DurablePatterns/)
 
 # Durable Patterns
 Welcome to the Durable Patterns Library!
@@ -117,4 +118,4 @@ internal class MyOrchestrator
 - [ ] Add support for [Human interaction](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp-inproc#human) pattern
 
 ## Contributing
-Contributions to this open source library are highly appreciated! If you're interested in helping out, please feel free to submit a pull request with your changes. We welcome contributions of all kinds, whether it's bug fixes, new features, or just improving the documentation. Please ensure that your code is well-documented, tested, and adheres to the coding conventions used in the project. Don't hesitate to reach out if you have any questions or need help getting started.
+Contributions to this open source library are highly appreciated! If you're interested in helping out, please feel free to submit a pull request with your changes. We welcome contributions of all kinds, whether it's bug fixes, new features, or just improving the documentation. Please ensure that your code is well-documented, tested, and adheres to the coding conventions used in the project. Don't hesitate to reach out if you have any questions or need help getting started. You can open an issue on GitHub or email us at contact@appstream.studio - we're happy to assist you in any way we can.
