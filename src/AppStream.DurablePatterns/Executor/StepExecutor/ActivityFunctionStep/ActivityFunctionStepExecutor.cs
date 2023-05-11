@@ -17,13 +17,9 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
         {
             Started = context.CurrentUtcDateTime;
 
-            // status?
-
             var result = await context.CallActivityAsync<ActivityFunctionResult>(
                 ActivityFunction.FunctionName,
                 new ActivityFunctionInput(step.StepId, input));
-
-            // status?
 
             var jTokenResult = (JToken)result.ActivityResult;
             var activityResult = jTokenResult.ToObject(step.PatternActivityResultType);

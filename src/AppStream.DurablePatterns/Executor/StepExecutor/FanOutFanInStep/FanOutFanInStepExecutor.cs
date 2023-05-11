@@ -29,14 +29,14 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
                 throw new ArgumentNullException(nameof(input));
             }
 
-            if (!input.GetType().IsCollection())
+            if (!input.GetType().IsGenericCollection())
             {
                 throw new ArgumentException(
                     $"Cannot execute FanOutFanIn step. Input type '{input.GetType().FullName}' has to implement '{typeof(ICollection<>).FullName}' interface and cannot be an array.",
                     nameof(input));
             }
 
-            if (!step.PatternActivityResultType.IsCollection())
+            if (!step.PatternActivityResultType.IsGenericCollection())
             {
                 throw new ArgumentException(
                     $"Cannot execute FanOutFanIn step. Result type '{step.PatternActivityResultType.FullName}' has to implement '{typeof(ICollection<>).FullName}' interface and cannot be an array.",

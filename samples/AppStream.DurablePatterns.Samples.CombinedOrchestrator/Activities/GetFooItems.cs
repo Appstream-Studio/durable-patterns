@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
 {
-    internal class GetFooItemsActivity : IPatternActivity<List<FooItem>>
+    internal class GetFooItems : IPatternActivity<List<FooItem>>
     {
         private readonly IFooItemRepository _repository;
-        private readonly ILogger<GetFooItemsActivity> _logger;
+        private readonly ILogger<GetFooItems> _logger;
 
-        public GetFooItemsActivity(
+        public GetFooItems(
             IFooItemRepository repository,
-            ILogger<GetFooItemsActivity> logger)
+            ILogger<GetFooItems> logger)
         {
             _repository = repository;
             _logger = logger;

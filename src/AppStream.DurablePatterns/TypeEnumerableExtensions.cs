@@ -2,28 +2,14 @@
 {
     internal static class TypeEnumerableExtensions
     {
-        public static bool IsCollection(this Type collectionType)
+        public static bool IsGenericCollection(this Type collectionType)
         {
             if (collectionType.IsArray)
             {
                 return false;
             }
 
-            if (collectionType.IsInterface && collectionType.GetGenericTypeDefinition() == typeof(ICollection<>))
-            {
-                return true;
-            }
-
-            foreach (Type interfaceType in collectionType.GetInterfaces())
-            {
-                if (interfaceType.IsGenericType
-                    && interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return GetCollectionElementType(collectionType) != null;
         }
 
         public static bool IsEnumerableOf(this Type collectionType, Type elementType)
@@ -33,7 +19,9 @@
 
         public static Type? GetCollectionElementType(this Type collectionType)
         {
-            if (collectionType.IsInterface && collectionType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (collectionType.IsInterface && 
+                collectionType.IsGenericType && 
+                collectionType.GetGenericTypeDefinition() == typeof(ICollection<>))
             {
                 return collectionType.GetGenericArguments()[0];
             }
@@ -41,7 +29,7 @@
             foreach (Type interfaceType in collectionType.GetInterfaces())
             {
                 if (interfaceType.IsGenericType
-                    && interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                    && interfaceType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 {
                     return interfaceType.GetGenericArguments()[0];
                 }

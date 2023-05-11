@@ -24,11 +24,11 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
         {
             return _patterns
                 .WithContext(context)
-                .RunActivity<GetFooItemsActivity>()
-                .FanOutFanIn<FanOutActivity>(new FanOutFanInOptions(
+                .RunActivity<GetFooItems>()
+                .FanOutFanIn<FanOut>(new FanOutFanInOptions(
                     BatchSize: 2, 
                     ParallelActivityFunctionsCap: 2))
-                .RunActivity<FanInActivity>()
+                .RunActivity<FanIn>()
                 .ExecuteAsync();
         }
 

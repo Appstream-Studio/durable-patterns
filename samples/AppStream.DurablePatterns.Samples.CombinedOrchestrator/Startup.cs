@@ -14,7 +14,7 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services
-                .AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(GetFooItemsActivity).Assembly))
+                .AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(GetFooItems).Assembly))
                 .AddSingleton<IFooItemRepository, FooItemRepository>();
         }
     }
