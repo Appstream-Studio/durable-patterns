@@ -1,3 +1,5 @@
+[![AppStream Studio](https://appstream.studio/brand/logo%20files/SVG/Logo-2.svg)](https://appstream.studio/)
+
 [![License](https://img.shields.io/badge/license-apache-green)](https://github.com/Appstream-Studio/durable-patterns/blob/main/LICENSE)
 [![NuGet Package](https://img.shields.io/nuget/v/appstream.durablepatterns.svg)](https://www.nuget.org/packages/AppStream.DurablePatterns/)
 
