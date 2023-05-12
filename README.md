@@ -35,7 +35,7 @@ internal class Startup : FunctionsStartup
     public override void Configure(IFunctionsHostBuilder builder)
     {
         builder.Services
-            .AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(MyGetItemsActivity).Assembly));
+            .AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(GetItems).Assembly));
     }
 }
 ```
@@ -44,11 +44,11 @@ internal class Startup : FunctionsStartup
 ```csharp
 using AppStream.DurablePatterns;
 
-internal class MyGetItemsActivity : IPatternActivity<List<Item>>
+internal class GetItems : IPatternActivity<List<Item>>
 {
     private readonly IRepository _repository;
 
-    public MyGetItemsActivity(IRepository repository)
+    public GetItems(IRepository repository)
     {
         _repository = repository;
     }
@@ -59,11 +59,11 @@ internal class MyGetItemsActivity : IPatternActivity<List<Item>>
     }
 }
 
-internal class MyFanOutActivity : IPatternActivity<List<Item>, List<Item>>
+internal class FanOut : IPatternActivity<List<Item>, List<Item>>
 {
     private readonly IItemProcessingService _service;
 
-    public MyFanOutActivity(IItemProcessingService service)
+    public FanOut(IItemProcessingService service)
     {
         _service = service;
     }
@@ -71,6 +71,29 @@ internal class MyFanOutActivity : IPatternActivity<List<Item>, List<Item>>
     public Task<List<Item>> RunAsync(List<Item> input)
     {
         // this block of code will be executed in parallel batches
+        var processedItems = new List<Item>();
+
+        foreach (var item in input)
+        {
+            processedItems.Add(_service.Process(item));
+        }
+
+        return Task.FromResult(processedItems);
+    }
+}
+
+internal class FanIn : IPatternActivity<List<Item>, List<Item>>
+{
+    private readonly IOtherItemProcessingService _service;
+
+    public FanIn(IOtherItemProcessingService service)
+    {
+        _service = service;
+    }
+
+    public Task<List<Item>> RunAsync(List<Item> input)
+    {
+        // this block of code will be executed once and the input will be all items returned from all FanOut activities
         var processedItems = new List<Item>();
 
         foreach (var item in input)
@@ -103,8 +126,9 @@ internal class MyOrchestrator
     {
         return _patterns
             .WithContext(context)
-            .RunActivity<MyGetItemsActivity>()
-            .FanOutFanIn<MyFanOutActivity>(new FanOutFanInOptions(BatchSize: 2, ParallelActivityFunctionsCap: 2))
+            .RunActivity<GetItems>()
+            .FanOutFanIn<FanOut>(new FanOutFanInOptions(BatchSize: 2, ParallelActivityFunctionsCap: 2))
+            .RunActivity<FanIn>()
             .ExecuteAsync();
     }
 }
