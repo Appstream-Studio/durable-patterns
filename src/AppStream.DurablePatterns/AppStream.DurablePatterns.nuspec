@@ -2,7 +2,6 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>AppStream.DurablePatterns</id>
-		<version>1.0.1</version>
 		<authors>https://appstream.studio/</authors>
 		<owners>https://appstream.studio/</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
