@@ -1,5 +1,4 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
-using AppStream.DurablePatterns.Builder;
 using AppStream.DurablePatterns.Builder.ContractResolver;
 using AppStream.DurablePatterns.Executor;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
@@ -25,11 +24,11 @@ namespace AppStream.DurablePatterns
         public static IServiceCollection AddDurablePatterns(this IServiceCollection services, Action<DurablePatternsConfiguration> configure) 
         {
             services
-                .AddSingleton<IFluentDurablePatterns, FluentDurablePatterns>()
+                .AddSingleton<IDurablePatterns, Builder.DurablePatterns>()
                 .AddSingleton<IPatternActivityContractResolver, PatternActivityContractResolver>()
                 .AddSingleton<IStepConfigurationValidator, StepConfigurationValidator>()
                 .AddSingleton<IStepConfigurationBag, StepConfigurationBag>()
-                .AddSingleton<IFluentDurablePatternsExecutor, FluentDurablePatternsExecutor>()
+                .AddSingleton<IDurablePatternsExecutor, DurablePatternsExecutor>()
                 .AddSingleton<IStepExecutorFactory, StepExecutorFactory>()
                 .AddSingleton<IPatternActivityFactory, PatternActivityFactory>()
                 .AddSingleton<ActivityFunctionStepExecutor>()

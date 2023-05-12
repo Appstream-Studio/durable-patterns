@@ -3,7 +3,7 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Executor
 {
-    internal interface IFluentDurablePatternsExecutor
+    internal interface IDurablePatternsExecutor
     {
         Task<ExecutionResult> ExecuteAsync(IEnumerable<StepConfiguration> steps, IDurableOrchestrationContext context);
     }

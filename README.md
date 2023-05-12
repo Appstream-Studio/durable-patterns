@@ -89,10 +89,10 @@ using AppStream.DurablePatterns;
 
 internal class MyOrchestrator
 {
-    private readonly IFluentDurablePatterns _patterns;
+    private readonly IDurablePatterns _patterns;
 
     public MyOrchestrator(
-        IFluentDurablePatterns patterns)
+        IDurablePatterns patterns)
     {
         _patterns = patterns;
     }

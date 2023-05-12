@@ -9,16 +9,16 @@ using Moq;
 namespace AppStream.DurablePatterns.Tests
 {
     [TestFixture]
-    public class FluentDurablePatternsExecutorTests
+    public class DurablePatternsExecutorTests
     {
-        private FluentDurablePatternsExecutor _executor;
+        private DurablePatternsExecutor _executor;
         private Mock<IStepExecutorFactory> _stepExecutorFactoryMock;
 
         [SetUp]
         public void SetUp()
         {
             _stepExecutorFactoryMock = new Mock<IStepExecutorFactory>();
-            _executor = new FluentDurablePatternsExecutor(_stepExecutorFactoryMock.Object);
+            _executor = new DurablePatternsExecutor(_stepExecutorFactoryMock.Object);
         }
 
         [Test]

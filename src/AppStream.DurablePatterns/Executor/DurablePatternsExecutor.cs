@@ -6,11 +6,11 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Executor
 {
-    internal class FluentDurablePatternsExecutor : IFluentDurablePatternsExecutor
+    internal class DurablePatternsExecutor : IDurablePatternsExecutor
     {
         private readonly IStepExecutorFactory _stepExecutorFactory;
 
-        public FluentDurablePatternsExecutor(IStepExecutorFactory stepExecutorFactory)
+        public DurablePatternsExecutor(IStepExecutorFactory stepExecutorFactory)
         {
             _stepExecutorFactory = stepExecutorFactory;
         }

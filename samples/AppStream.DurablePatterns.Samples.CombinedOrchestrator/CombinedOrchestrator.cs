@@ -11,9 +11,9 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
 {
     public class CombinedOrchestrator
     {
-        private readonly IFluentDurablePatterns _patterns;
+        private readonly IDurablePatterns _patterns;
 
-        public CombinedOrchestrator(IFluentDurablePatterns patterns)
+        public CombinedOrchestrator(IDurablePatterns patterns)
         {
             _patterns = patterns;
         }

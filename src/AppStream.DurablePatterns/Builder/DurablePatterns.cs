@@ -7,18 +7,18 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Builder
 {
-    internal class FluentDurablePatterns : IFluentDurablePatterns, IFluentDurablePatternsWithContext, IFluentDurablePatternsContinuation
+    internal class DurablePatterns : IDurablePatterns, IDurablePatternsWithContext, IDurablePatternsContinuation
     {
         private readonly List<StepConfiguration> _steps;
-        private readonly IFluentDurablePatternsExecutor _executor;
+        private readonly IDurablePatternsExecutor _executor;
         private readonly IPatternActivityContractResolver _contractResolver;
         private readonly IStepConfigurationBag _stepConfigurationBag;
         private readonly IStepConfigurationValidator _stepValidator;
 
         private IDurableOrchestrationContext? _context;
 
-        public FluentDurablePatterns(
-            IFluentDurablePatternsExecutor executor,
+        public DurablePatterns(
+            IDurablePatternsExecutor executor,
             IPatternActivityContractResolver contractResolver,
             IStepConfigurationBag stepConfigurationBag,
             IStepConfigurationValidator stepValidator)
@@ -46,13 +46,13 @@ namespace AppStream.DurablePatterns.Builder
         public Task<ExecutionResult> ExecuteAsync()
             => _executor.ExecuteAsync(_steps, Context);
 
-        public IFluentDurablePatternsContinuation FanOutFanIn<TActivity>(FanOutFanInOptions options) where TActivity : IPatternActivity
+        public IDurablePatternsContinuation FanOutFanIn<TActivity>(FanOutFanInOptions options) where TActivity : IPatternActivity
             => RunActivityInternal<TActivity>(StepType.FanOutFanIn, options);
 
-        public IFluentDurablePatternsContinuation RunActivity<TActivity>() where TActivity : IPatternActivity
+        public IDurablePatternsContinuation RunActivity<TActivity>() where TActivity : IPatternActivity
             => RunActivityInternal<TActivity>(StepType.ActivityFunction, null);
 
-        private IFluentDurablePatternsContinuation RunActivityInternal<TActivity>(StepType stepType, FanOutFanInOptions? options)
+        private IDurablePatternsContinuation RunActivityInternal<TActivity>(StepType stepType, FanOutFanInOptions? options)
         {
             if (!Context.IsReplaying)
             {
@@ -73,7 +73,7 @@ namespace AppStream.DurablePatterns.Builder
             return this;
         }
 
-        public IFluentDurablePatternsWithContext WithContext(IDurableOrchestrationContext context)
+        public IDurablePatternsWithContext WithContext(IDurableOrchestrationContext context)
         {
             _context = context;
             return this;

@@ -10,10 +10,10 @@ using Moq;
 namespace AppStream.DurablePatterns.Tests
 {
     [TestFixture]
-    public class FluentDurablePatternsTests
+    public class DurablePatternsTests
     {
-        private FluentDurablePatterns _patterns;
-        private Mock<IFluentDurablePatternsExecutor> _executorMock;
+        private Builder.DurablePatterns _patterns;
+        private Mock<IDurablePatternsExecutor> _executorMock;
         private Mock<IPatternActivityContractResolver> _contractResolverMock;
         private Mock<IStepConfigurationBag> _stepConfigurationBagMock;
         private Mock<IStepConfigurationValidator> _stepValidatorMock;
@@ -22,7 +22,7 @@ namespace AppStream.DurablePatterns.Tests
         [SetUp]
         public void Setup()
         {
-            _executorMock = new Mock<IFluentDurablePatternsExecutor>();
+            _executorMock = new Mock<IDurablePatternsExecutor>();
             _contractResolverMock = new Mock<IPatternActivityContractResolver>();
             _contractResolverMock
                 .Setup(r => r.Resolve(It.Is<Type>(t => t == typeof(SampleActivity))))
@@ -32,7 +32,7 @@ namespace AppStream.DurablePatterns.Tests
             _stepValidatorMock = new Mock<IStepConfigurationValidator>();
             _contextMock = new Mock<IDurableOrchestrationContext>();
 
-            _patterns = new FluentDurablePatterns(
+            _patterns = new Builder.DurablePatterns(
                 _executorMock.Object,
                 _contractResolverMock.Object,
                 _stepConfigurationBagMock.Object,
