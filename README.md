@@ -1,7 +1,8 @@
-[![AppStream Studio](https://appstream.studio/brand/logo%20files/JPEGs/1x/Logo-2-100.jpg)](https://appstream.studio/)
+[![AppStream Studio](https://raw.githubusercontent.com/Appstream-Studio/durable-patterns/main/assets/banner.jpg)](https://appstream.studio/)
 
 [![License](https://img.shields.io/badge/license-apache-green)](https://github.com/Appstream-Studio/durable-patterns/blob/main/LICENSE)
 [![NuGet Package](https://img.shields.io/nuget/v/appstream.durablepatterns.svg)](https://www.nuget.org/packages/AppStream.DurablePatterns/)
+[![Build Status](https://dev.azure.com/appstreamstudio/devops/_apis/build/status%2FNugets%2Fdurable-patterns?repoName=devops&branchName=master)](https://dev.azure.com/appstreamstudio/devops/_build/latest?definitionId=1&repoName=devops&branchName=master)
 
 # Durable Patterns
 Welcome to the Durable Patterns Library!
