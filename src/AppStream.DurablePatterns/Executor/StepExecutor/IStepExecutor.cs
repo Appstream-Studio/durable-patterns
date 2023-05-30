@@ -7,6 +7,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor
     {
         Task<StepExecutionResult> ExecuteStepAsync(
             StepConfiguration step,
+            EntityId stepsConfigEntityId,
             IDurableOrchestrationContext context,
             object? input);
     }

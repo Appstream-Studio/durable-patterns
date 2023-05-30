@@ -1,6 +1,6 @@
 ﻿namespace AppStream.DurablePatterns.StepsConfig
 {
-    internal enum StepType
+    public enum StepType
     {
         ActivityFunction,
         FanOutFanIn

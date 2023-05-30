@@ -8,13 +8,21 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor
         protected abstract DateTime Started { get; set; }
         protected abstract StepType StepType { get; }
 
-        protected abstract Task<StepExecutionResult> ExecuteStepInternalAsync(StepConfiguration step, IDurableOrchestrationContext context, object? input);
+        protected abstract Task<StepExecutionResult> ExecuteStepInternalAsync(
+            StepConfiguration step,
+            EntityId stepsConfigEntityId,
+            IDurableOrchestrationContext context, 
+            object? input);
 
-        public Task<StepExecutionResult> ExecuteStepAsync(StepConfiguration step, IDurableOrchestrationContext context, object? input)
+        public Task<StepExecutionResult> ExecuteStepAsync(
+            StepConfiguration step, 
+            EntityId stepsConfigEntityId, 
+            IDurableOrchestrationContext context, 
+            object? input)
         {
             try
             {
-                return ExecuteStepInternalAsync(step, context, input);
+                return ExecuteStepInternalAsync(step, stepsConfigEntityId, context, input);
             }
             catch (Exception e)
             {

@@ -17,6 +17,7 @@ namespace AppStream.DurablePatterns.Executor
 
         public async Task<ExecutionResult> ExecuteAsync(
             IEnumerable<StepConfiguration> steps,
+            EntityId stepsConfigEntityId,
             IDurableOrchestrationContext context)
         {
             if (steps == null)
@@ -40,7 +41,7 @@ namespace AppStream.DurablePatterns.Executor
                     input = previousStepResult.Result;
                 }
 
-                var stepResult = await executor.ExecuteStepAsync(step, context, input);
+                var stepResult = await executor.ExecuteStepAsync(step, stepsConfigEntityId, context, input);
                 if (!stepResult.Succeeded)
                 {
                     throw new PatternActivityFailedException(

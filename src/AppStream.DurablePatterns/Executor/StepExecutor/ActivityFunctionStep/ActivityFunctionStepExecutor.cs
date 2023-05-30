@@ -12,6 +12,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
 
         protected override async Task<StepExecutionResult> ExecuteStepInternalAsync(
             StepConfiguration step,
+            EntityId stepsConfigEntityId,
             IDurableOrchestrationContext context,
             object? input)
         {
@@ -19,7 +20,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
 
             var result = await context.CallActivityAsync<ActivityFunctionResult>(
                 ActivityFunction.FunctionName,
-                new ActivityFunctionInput(step.StepId, input));
+                new ActivityFunctionInput(step.StepId, stepsConfigEntityId, input));
 
             var jTokenResult = (JToken)result.ActivityResult;
             var activityResult = jTokenResult.ToObject(step.PatternActivityResultType);

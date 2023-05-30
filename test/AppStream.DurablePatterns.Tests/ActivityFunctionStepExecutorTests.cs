@@ -1,6 +1,7 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.StepsConfig.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -24,6 +25,7 @@ namespace AppStream.DurablePatterns.Tests
         public async Task ExecuteStepInternalAsync_ReturnsStepExecutionResult()
         {
             // Arrange
+            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
             var step = new StepConfiguration(
                 Guid.NewGuid(),
                 StepType.ActivityFunction,
@@ -38,7 +40,7 @@ namespace AppStream.DurablePatterns.Tests
                 .ReturnsAsync(activityResult);
 
             // Act
-            var result = await _stepExecutor.ExecuteStepAsync(step, _mockContext.Object, input);
+            var result = await _stepExecutor.ExecuteStepAsync(step, stepsConfigEntityId, _mockContext.Object, input);
 
             // Assert
             Assert.Multiple(() =>

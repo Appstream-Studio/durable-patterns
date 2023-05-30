@@ -5,7 +5,6 @@ using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationBag;
 using AppStream.DurablePatterns.StepsConfig.ConfigurationValidator;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,7 +26,6 @@ namespace AppStream.DurablePatterns
                 .AddSingleton<IDurablePatterns, Builder.DurablePatterns>()
                 .AddSingleton<IPatternActivityContractResolver, PatternActivityContractResolver>()
                 .AddSingleton<IStepConfigurationValidator, StepConfigurationValidator>()
-                .AddSingleton<IStepConfigurationBag, StepConfigurationBag>()
                 .AddSingleton<IDurablePatternsExecutor, DurablePatternsExecutor>()
                 .AddSingleton<IStepExecutorFactory, StepExecutorFactory>()
                 .AddSingleton<IPatternActivityFactory, PatternActivityFactory>()

@@ -1,7 +1,7 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
 using AppStream.DurablePatterns.StepsConfig;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationBag;
+using AppStream.DurablePatterns.StepsConfig.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -11,43 +11,54 @@ namespace AppStream.DurablePatterns.Tests
     [TestFixture]
     internal class ActivityFunctionTests
     {
+        private Mock<IDurableEntityClient> _mockDurableEntityClient;
         private Mock<IPatternActivityFactory> _mockActivityFactory;
-        private Mock<IStepConfigurationBag> _mockStepConfigurationBag;
         private ActivityFunction _activityFunction;
 
         [SetUp]
         public void SetUp()
         {
+            _mockDurableEntityClient = new Mock<IDurableEntityClient>();
             _mockActivityFactory = new Mock<IPatternActivityFactory>();
             _mockActivityFactory
                 .Setup(f => f.Create<MyPatternActivityInput, MyPatternActivityResult>(It.Is<Type>(t => t == typeof(MyPatternActivity))))
                 .Returns(new MyPatternActivity());
 
-            _mockStepConfigurationBag = new Mock<IStepConfigurationBag>();
-            _activityFunction = new ActivityFunction(_mockActivityFactory.Object, _mockStepConfigurationBag.Object);
+            _activityFunction = new ActivityFunction(_mockActivityFactory.Object);
         }
 
         [Test]
         public async Task RunWorker_WithValidSetup_CallsPatternActivityFactoryCreateWithCorrectGenericArguments()
         {
             // Arrange
+            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
             var contextMock = new Mock<IDurableActivityContext>();
             var stepId = Guid.NewGuid();
             var patternActivityType = typeof(MyPatternActivity);
             var inputType = typeof(MyPatternActivityInput);
             var resultType = typeof(MyPatternActivityResult);
-            var functionInput = new ActivityFunctionInput(stepId, null);
+            var functionInput = new ActivityFunctionInput(stepId, stepsConfigEntityId, Input: null);
             var stepConfiguration = new StepConfiguration(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
 
             contextMock
                 .Setup(c => c.GetInput<ActivityFunctionInput>())
                 .Returns(functionInput);
-            _mockStepConfigurationBag
-                .Setup(s => s.Get(stepId))
-                .Returns(stepConfiguration);
+            _mockDurableEntityClient
+                .Setup(c => c.ReadEntityStateAsync<StepsConfigEntity>(stepsConfigEntityId, null, null))
+                .ReturnsAsync(new EntityStateResponse<StepsConfigEntity>
+                {
+                    EntityExists = true,
+                    EntityState = new StepsConfigEntity
+                    {
+                        Steps = new Dictionary<Guid, StepConfiguration>
+                        {
+                            { stepId, stepConfiguration }
+                        }
+                    }
+                });
 
             // Act
-            await _activityFunction.RunWorker(contextMock.Object);
+            await _activityFunction.RunWorker(contextMock.Object, _mockDurableEntityClient.Object);
 
             // Assert
             _mockActivityFactory.Verify(p => p.Create<MyPatternActivityInput, MyPatternActivityResult>(patternActivityType), Times.Once);
@@ -57,6 +68,7 @@ namespace AppStream.DurablePatterns.Tests
         public async Task RunWorker_WithValidSetup_ReturnsCorrectActivityResult() 
         {
             // Arrange
+            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
             var contextMock = new Mock<IDurableActivityContext>();
             var stepId = Guid.NewGuid();
             var patternActivityType = typeof(MyPatternActivity);
@@ -64,7 +76,7 @@ namespace AppStream.DurablePatterns.Tests
             var resultType = typeof(MyPatternActivityResult);
             var input = new MyPatternActivityInput { Property1 = "value1", Property2 = 42 };
             var serializedInput = JToken.FromObject(input);
-            var functionInput = new ActivityFunctionInput(stepId, serializedInput);
+            var functionInput = new ActivityFunctionInput(stepId, stepsConfigEntityId, serializedInput);
             var stepConfiguration = new StepConfiguration(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
             var expectedActivityResult = new MyPatternActivityResult { Property3 = "result3", Property4 = true };
             var patternActivity = new MyPatternActivity(expectedActivityResult);
@@ -75,12 +87,22 @@ namespace AppStream.DurablePatterns.Tests
             _mockActivityFactory
                 .Setup(factory => factory.Create<MyPatternActivityInput, MyPatternActivityResult>(typeof(MyPatternActivity)))
                 .Returns(patternActivity);
-            _mockStepConfigurationBag
-                .Setup(s => s.Get(stepId))
-                .Returns(stepConfiguration);
+            _mockDurableEntityClient
+                .Setup(c => c.ReadEntityStateAsync<StepsConfigEntity>(stepsConfigEntityId, null, null))
+                .ReturnsAsync(new EntityStateResponse<StepsConfigEntity>
+                {
+                    EntityExists = true,
+                    EntityState = new StepsConfigEntity
+                    {
+                        Steps = new Dictionary<Guid, StepConfiguration>
+                        {
+                            { stepId, stepConfiguration }
+                        }
+                    }
+                });
 
             // Act
-            var result = await _activityFunction.RunWorker(contextMock.Object);
+            var result = await _activityFunction.RunWorker(contextMock.Object, _mockDurableEntityClient.Object);
 
             // Assert
             Assert.That(result.ActivityResult, Is.EqualTo(expectedActivityResult));

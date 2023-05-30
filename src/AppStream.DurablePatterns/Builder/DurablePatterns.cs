@@ -1,8 +1,8 @@
 ﻿using AppStream.DurablePatterns.Builder.ContractResolver;
 using AppStream.DurablePatterns.Executor;
 using AppStream.DurablePatterns.StepsConfig;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationBag;
 using AppStream.DurablePatterns.StepsConfig.ConfigurationValidator;
+using AppStream.DurablePatterns.StepsConfig.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Builder
@@ -12,7 +12,6 @@ namespace AppStream.DurablePatterns.Builder
         private readonly List<StepConfiguration> _steps;
         private readonly IDurablePatternsExecutor _executor;
         private readonly IPatternActivityContractResolver _contractResolver;
-        private readonly IStepConfigurationBag _stepConfigurationBag;
         private readonly IStepConfigurationValidator _stepValidator;
 
         private IDurableOrchestrationContext? _context;
@@ -20,13 +19,11 @@ namespace AppStream.DurablePatterns.Builder
         public DurablePatterns(
             IDurablePatternsExecutor executor,
             IPatternActivityContractResolver contractResolver,
-            IStepConfigurationBag stepConfigurationBag,
             IStepConfigurationValidator stepValidator)
         {
             _steps = new();
             _executor = executor;
             _contractResolver = contractResolver;
-            _stepConfigurationBag = stepConfigurationBag;
             _stepValidator = stepValidator;
         }
 
@@ -43,8 +40,21 @@ namespace AppStream.DurablePatterns.Builder
             }
         }
 
-        public Task<ExecutionResult> ExecuteAsync()
-            => _executor.ExecuteAsync(_steps, Context);
+        public async Task<ExecutionResult> ExecuteAsync()
+        {
+            var stepsConfigEntityId = new EntityId(
+                nameof(StepsConfigEntity),
+                Context.NewGuid().ToString());
+
+            var proxy = Context.CreateEntityProxy<IStepsConfigEntity>(stepsConfigEntityId);
+            var stepsDict = _steps.ToDictionary(s => s.StepId, s => s);
+            await proxy.Set(stepsDict);
+
+            return await _executor.ExecuteAsync(
+                _steps,
+                stepsConfigEntityId,
+                Context);
+        }
 
         public IDurablePatternsContinuation FanOutFanIn<TActivity>(FanOutFanInOptions options) where TActivity : IPatternActivity
             => RunActivityInternal<TActivity>(StepType.FanOutFanIn, options);
@@ -54,11 +64,12 @@ namespace AppStream.DurablePatterns.Builder
 
         private IDurablePatternsContinuation RunActivityInternal<TActivity>(StepType stepType, FanOutFanInOptions? options)
         {
-            if (!Context.IsReplaying)
+            var stepId = Context.NewGuid();
+            if (!_steps.Any(s => s.StepId == stepId))
             {
                 var activityContract = _contractResolver.Resolve(typeof(TActivity));
                 var stepConfiguration = new StepConfiguration(
-                    Context.NewGuid(),
+                    stepId,
                     stepType,
                     typeof(TActivity),
                     activityContract.InputType,
@@ -67,7 +78,6 @@ namespace AppStream.DurablePatterns.Builder
 
                 _stepValidator.Validate(stepConfiguration, _steps.LastOrDefault());
                 _steps.Add(stepConfiguration);
-                _stepConfigurationBag.Add(stepConfiguration);
             }
 
             return this;

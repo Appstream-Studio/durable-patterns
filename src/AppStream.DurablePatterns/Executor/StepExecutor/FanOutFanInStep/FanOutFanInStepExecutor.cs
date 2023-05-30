@@ -21,6 +21,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
         protected override async Task<StepExecutionResult> ExecuteStepInternalAsync(
             StepConfiguration step,
+            EntityId stepsConfigEntityId,
             IDurableOrchestrationContext context,
             object? input)
         {
@@ -52,13 +53,14 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
                     input.GetType().GetCollectionElementType()!,
                     step.PatternActivityResultType,
                     step.PatternActivityResultType.GetCollectionElementType()!)
-                .Invoke(this, new object?[] { step, context, input })!;
+                .Invoke(this, new object?[] { step, stepsConfigEntityId, context, input })!;
 
             return result;
         }
 
         private async Task<FanOutFanInStepExecutionResult> ExecuteFanOutFanInInternalAsync<TInputCollection, TInputItem, TResultCollection, TResultItem>(
             StepConfiguration step,
+            EntityId stepsConfigEntityId,
             IDurableOrchestrationContext context,
             TInputCollection input)
             where TInputCollection : ICollection<TInputItem>
@@ -86,7 +88,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
                 var task = context.CallActivityAsync<ActivityFunctionResult>(
                     ActivityFunction.FunctionName,
-                    new ActivityFunctionInput(step.StepId, activityInput));
+                    new ActivityFunctionInput(step.StepId, stepsConfigEntityId, activityInput));
 
                 workInProgress.Add(task);
 
