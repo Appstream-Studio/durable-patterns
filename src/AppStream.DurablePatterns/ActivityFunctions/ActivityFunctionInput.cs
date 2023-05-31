@@ -2,5 +2,5 @@
 
 namespace AppStream.DurablePatterns.ActivityFunctions
 {
-    internal record ActivityFunctionInput(Guid StepId, EntityId StepsConfigEntityId, object? Input);
+    internal record ActivityFunctionInput(Guid StepId, EntityId StepsEntityId, object? Input);
 }

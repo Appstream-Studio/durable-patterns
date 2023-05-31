@@ -1,8 +1,8 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
-using AppStream.DurablePatterns.StepsConfig;
-using AppStream.DurablePatterns.StepsConfig.Entity;
+using AppStream.DurablePatterns.Steps;
+using AppStream.DurablePatterns.Steps.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -26,8 +26,8 @@ namespace AppStream.DurablePatterns.Tests
         public void ExecuteStepAsync_InputIsNull_ThrowsArgumentNullException()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -39,15 +39,15 @@ namespace AppStream.DurablePatterns.Tests
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentNullException>(
-                () => _executor.ExecuteStepAsync(step, stepsConfigEntityId, context, null));
+                () => _executor.ExecuteStepAsync(step, stepsEntityId, context, null));
         }
 
         [Test]
         public void ExecuteStepAsync_InputIsNotCollection_ThrowsArgumentException()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -60,15 +60,15 @@ namespace AppStream.DurablePatterns.Tests
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(
-                () => _executor.ExecuteStepAsync(step, stepsConfigEntityId, context, input));
+                () => _executor.ExecuteStepAsync(step, stepsEntityId, context, input));
         }
 
         [Test]
         public void ExecuteStepAsync_ResultTypeIsNotCollection_ThrowsArgumentException()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -81,15 +81,15 @@ namespace AppStream.DurablePatterns.Tests
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(
-                () => _executor.ExecuteStepAsync(step, stepsConfigEntityId, context, input));
+                () => _executor.ExecuteStepAsync(step, stepsEntityId, context, input));
         }
 
         [Test]
         public async Task ExecuteFanOutFanInInternalAsync_InputsAreValid_CallsActivityFunction()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -108,7 +108,7 @@ namespace AppStream.DurablePatterns.Tests
                     TimeSpan.Zero));
 
             // Act
-            var result = await _executor.ExecuteStepAsync(step, stepsConfigEntityId, contextMock.Object, input);
+            var result = await _executor.ExecuteStepAsync(step, stepsEntityId, contextMock.Object, input);
             
             // Assert
             contextMock.Verify(m => m.CallActivityAsync<ActivityFunctionResult>(
@@ -120,8 +120,8 @@ namespace AppStream.DurablePatterns.Tests
         public async Task ExecuteFanOutFanInInternalAsync_InputsAreValid_CallsActivityFunctionOnceForEachBatch()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -140,7 +140,7 @@ namespace AppStream.DurablePatterns.Tests
                     TimeSpan.Zero));
 
             // Act
-            var result = await _executor.ExecuteStepAsync(step, stepsConfigEntityId, contextMock.Object, input);
+            var result = await _executor.ExecuteStepAsync(step, stepsEntityId, contextMock.Object, input);
 
             // Assert
             contextMock.Verify(
@@ -154,8 +154,8 @@ namespace AppStream.DurablePatterns.Tests
         public async Task CombineResults_InputsAreValid_ReturnsCombinedResults()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
-            var step = new StepConfiguration(
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
+            var step = new Step(
                 Guid.NewGuid(),
                 StepType.FanOutFanIn,
                 typeof(MyPatternActivity),
@@ -175,7 +175,7 @@ namespace AppStream.DurablePatterns.Tests
                     TimeSpan.Zero));
 
             // Act
-            var result = await _executor.ExecuteStepAsync(step, stepsConfigEntityId, contextMock.Object, input);
+            var result = await _executor.ExecuteStepAsync(step, stepsEntityId, contextMock.Object, input);
             
             // Assert
             Assert.Multiple(() =>

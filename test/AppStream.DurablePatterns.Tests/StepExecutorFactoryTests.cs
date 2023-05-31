@@ -2,7 +2,7 @@
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 using Moq;
 
 namespace AppStream.DurablePatterns.Tests

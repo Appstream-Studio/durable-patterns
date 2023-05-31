@@ -1,25 +1,25 @@
 ﻿using AppStream.DurablePatterns.Builder.ContractResolver;
 using AppStream.DurablePatterns.Executor;
-using AppStream.DurablePatterns.StepsConfig;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationValidator;
-using AppStream.DurablePatterns.StepsConfig.Entity;
+using AppStream.DurablePatterns.Steps;
+using AppStream.DurablePatterns.Steps.ConfigurationValidator;
+using AppStream.DurablePatterns.Steps.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Builder
 {
     internal class DurablePatterns : IDurablePatterns, IDurablePatternsWithContext, IDurablePatternsContinuation
     {
-        private readonly List<StepConfiguration> _steps;
+        private readonly List<Step> _steps;
         private readonly IDurablePatternsExecutor _executor;
         private readonly IPatternActivityContractResolver _contractResolver;
-        private readonly IStepConfigurationValidator _stepValidator;
+        private readonly IStepValidator _stepValidator;
 
         private IDurableOrchestrationContext? _context;
 
         public DurablePatterns(
             IDurablePatternsExecutor executor,
             IPatternActivityContractResolver contractResolver,
-            IStepConfigurationValidator stepValidator)
+            IStepValidator stepValidator)
         {
             _steps = new();
             _executor = executor;
@@ -42,17 +42,17 @@ namespace AppStream.DurablePatterns.Builder
 
         public async Task<ExecutionResult> ExecuteAsync()
         {
-            var stepsConfigEntityId = new EntityId(
-                nameof(StepsConfigEntity),
+            var stepsEntityId = new EntityId(
+                nameof(StepsEntity),
                 Context.NewGuid().ToString());
 
-            var proxy = Context.CreateEntityProxy<IStepsConfigEntity>(stepsConfigEntityId);
+            var proxy = Context.CreateEntityProxy<IStepsEntity>(stepsEntityId);
             var stepsDict = _steps.ToDictionary(s => s.StepId, s => s);
             await proxy.Set(stepsDict);
 
             return await _executor.ExecuteAsync(
                 _steps,
-                stepsConfigEntityId,
+                stepsEntityId,
                 Context);
         }
 
@@ -68,7 +68,7 @@ namespace AppStream.DurablePatterns.Builder
             if (!_steps.Any(s => s.StepId == stepId))
             {
                 var activityContract = _contractResolver.Resolve(typeof(TActivity));
-                var stepConfiguration = new StepConfiguration(
+                var stepConfiguration = new Step(
                     stepId,
                     stepType,
                     typeof(TActivity),

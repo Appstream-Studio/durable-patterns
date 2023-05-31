@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.Builder;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 {

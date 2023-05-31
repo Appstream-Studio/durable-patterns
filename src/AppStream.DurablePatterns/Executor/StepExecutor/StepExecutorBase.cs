@@ -1,4 +1,4 @@
-﻿using AppStream.DurablePatterns.StepsConfig;
+﻿using AppStream.DurablePatterns.Steps;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutor
@@ -9,20 +9,20 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor
         protected abstract StepType StepType { get; }
 
         protected abstract Task<StepExecutionResult> ExecuteStepInternalAsync(
-            StepConfiguration step,
-            EntityId stepsConfigEntityId,
+            Step step,
+            EntityId stepsEntityId,
             IDurableOrchestrationContext context, 
             object? input);
 
         public Task<StepExecutionResult> ExecuteStepAsync(
-            StepConfiguration step, 
-            EntityId stepsConfigEntityId, 
+            Step step, 
+            EntityId stepsEntityId, 
             IDurableOrchestrationContext context, 
             object? input)
         {
             try
             {
-                return ExecuteStepInternalAsync(step, stepsConfigEntityId, context, input);
+                return ExecuteStepInternalAsync(step, stepsEntityId, context, input);
             }
             catch (Exception e)
             {

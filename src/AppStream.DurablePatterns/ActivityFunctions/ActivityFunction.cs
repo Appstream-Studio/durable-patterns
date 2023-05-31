@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
-using AppStream.DurablePatterns.StepsConfig.Entity;
+using AppStream.DurablePatterns.Steps.Entity;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Newtonsoft.Json.Linq;
@@ -26,7 +26,7 @@ namespace AppStream.DurablePatterns.ActivityFunctions
             [DurableClient] IDurableEntityClient durableClient)
         {
             var functionInput = context.GetInput<ActivityFunctionInput>();
-            var stepsResponse = await durableClient.ReadEntityStateAsync<StepsConfigEntity>(functionInput.StepsConfigEntityId);
+            var stepsResponse = await durableClient.ReadEntityStateAsync<StepsEntity>(functionInput.StepsEntityId);
             var stepConfiguration = stepsResponse.EntityState.Steps![functionInput.StepId];
 
             object? input = null;

@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.Executor.StepExecutor;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutorFactory
 {

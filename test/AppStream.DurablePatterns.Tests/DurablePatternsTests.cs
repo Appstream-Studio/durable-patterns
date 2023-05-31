@@ -1,7 +1,7 @@
 ﻿using AppStream.DurablePatterns.Builder;
 using AppStream.DurablePatterns.Builder.ContractResolver;
 using AppStream.DurablePatterns.Executor;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationValidator;
+using AppStream.DurablePatterns.Steps.ConfigurationValidator;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 
@@ -13,7 +13,7 @@ namespace AppStream.DurablePatterns.Tests
         private Builder.DurablePatterns _patterns;
         private Mock<IDurablePatternsExecutor> _executorMock;
         private Mock<IPatternActivityContractResolver> _contractResolverMock;
-        private Mock<IStepConfigurationValidator> _stepValidatorMock;
+        private Mock<IStepValidator> _stepValidatorMock;
         private Mock<IDurableOrchestrationContext> _contextMock;
 
         [SetUp]
@@ -25,7 +25,7 @@ namespace AppStream.DurablePatterns.Tests
                 .Setup(r => r.Resolve(It.Is<Type>(t => t == typeof(SampleActivity))))
                 .Returns(new PatternActivityContract(typeof(string), typeof(int)));
 
-            _stepValidatorMock = new Mock<IStepConfigurationValidator>();
+            _stepValidatorMock = new Mock<IStepValidator>();
             _contextMock = new Mock<IDurableOrchestrationContext>();
 
             _patterns = new Builder.DurablePatterns(

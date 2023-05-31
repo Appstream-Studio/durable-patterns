@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Newtonsoft.Json.Linq;
 
@@ -11,8 +11,8 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
         protected override StepType StepType => StepType.ActivityFunction;
 
         protected override async Task<StepExecutionResult> ExecuteStepInternalAsync(
-            StepConfiguration step,
-            EntityId stepsConfigEntityId,
+            Step step,
+            EntityId stepsEntityId,
             IDurableOrchestrationContext context,
             object? input)
         {
@@ -20,7 +20,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
 
             var result = await context.CallActivityAsync<ActivityFunctionResult>(
                 ActivityFunction.FunctionName,
-                new ActivityFunctionInput(step.StepId, stepsConfigEntityId, input));
+                new ActivityFunctionInput(step.StepId, stepsEntityId, input));
 
             var jTokenResult = (JToken)result.ActivityResult;
             var activityResult = jTokenResult.ToObject(step.PatternActivityResultType);

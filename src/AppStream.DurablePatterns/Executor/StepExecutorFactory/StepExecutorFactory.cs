@@ -1,7 +1,7 @@
 ﻿using AppStream.DurablePatterns.Executor.StepExecutor;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutorFactory

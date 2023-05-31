@@ -1,6 +1,6 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
-using AppStream.DurablePatterns.StepsConfig;
+using AppStream.DurablePatterns.Steps;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
@@ -20,8 +20,8 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
         protected override StepType StepType => StepType.FanOutFanIn;
 
         protected override async Task<StepExecutionResult> ExecuteStepInternalAsync(
-            StepConfiguration step,
-            EntityId stepsConfigEntityId,
+            Step step,
+            EntityId stepsEntityId,
             IDurableOrchestrationContext context,
             object? input)
         {
@@ -53,14 +53,14 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
                     input.GetType().GetCollectionElementType()!,
                     step.PatternActivityResultType,
                     step.PatternActivityResultType.GetCollectionElementType()!)
-                .Invoke(this, new object?[] { step, stepsConfigEntityId, context, input })!;
+                .Invoke(this, new object?[] { step, stepsEntityId, context, input })!;
 
             return result;
         }
 
         private async Task<FanOutFanInStepExecutionResult> ExecuteFanOutFanInInternalAsync<TInputCollection, TInputItem, TResultCollection, TResultItem>(
-            StepConfiguration step,
-            EntityId stepsConfigEntityId,
+            Step step,
+            EntityId stepsEntityId,
             IDurableOrchestrationContext context,
             TInputCollection input)
             where TInputCollection : ICollection<TInputItem>
@@ -88,7 +88,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
                 var task = context.CallActivityAsync<ActivityFunctionResult>(
                     ActivityFunction.FunctionName,
-                    new ActivityFunctionInput(step.StepId, stepsConfigEntityId, activityInput));
+                    new ActivityFunctionInput(step.StepId, stepsEntityId, activityInput));
 
                 workInProgress.Add(task);
 

@@ -1,4 +1,4 @@
-﻿namespace AppStream.DurablePatterns.StepsConfig
+﻿namespace AppStream.DurablePatterns.Steps
 {
     public enum StepType
     {

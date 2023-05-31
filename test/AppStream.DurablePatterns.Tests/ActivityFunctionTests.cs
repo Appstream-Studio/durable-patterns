@@ -1,7 +1,7 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
-using AppStream.DurablePatterns.StepsConfig;
-using AppStream.DurablePatterns.StepsConfig.Entity;
+using AppStream.DurablePatterns.Steps;
+using AppStream.DurablePatterns.Steps.Entity;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -31,26 +31,26 @@ namespace AppStream.DurablePatterns.Tests
         public async Task RunWorker_WithValidSetup_CallsPatternActivityFactoryCreateWithCorrectGenericArguments()
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
             var contextMock = new Mock<IDurableActivityContext>();
             var stepId = Guid.NewGuid();
             var patternActivityType = typeof(MyPatternActivity);
             var inputType = typeof(MyPatternActivityInput);
             var resultType = typeof(MyPatternActivityResult);
-            var functionInput = new ActivityFunctionInput(stepId, stepsConfigEntityId, Input: null);
-            var stepConfiguration = new StepConfiguration(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
+            var functionInput = new ActivityFunctionInput(stepId, stepsEntityId, Input: null);
+            var stepConfiguration = new Step(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
 
             contextMock
                 .Setup(c => c.GetInput<ActivityFunctionInput>())
                 .Returns(functionInput);
             _mockDurableEntityClient
-                .Setup(c => c.ReadEntityStateAsync<StepsConfigEntity>(stepsConfigEntityId, null, null))
-                .ReturnsAsync(new EntityStateResponse<StepsConfigEntity>
+                .Setup(c => c.ReadEntityStateAsync<StepsEntity>(stepsEntityId, null, null))
+                .ReturnsAsync(new EntityStateResponse<StepsEntity>
                 {
                     EntityExists = true,
-                    EntityState = new StepsConfigEntity
+                    EntityState = new StepsEntity
                     {
-                        Steps = new Dictionary<Guid, StepConfiguration>
+                        Steps = new Dictionary<Guid, Step>
                         {
                             { stepId, stepConfiguration }
                         }
@@ -68,7 +68,7 @@ namespace AppStream.DurablePatterns.Tests
         public async Task RunWorker_WithValidSetup_ReturnsCorrectActivityResult() 
         {
             // Arrange
-            var stepsConfigEntityId = new EntityId(nameof(StepsConfigEntity), Guid.NewGuid().ToString());
+            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
             var contextMock = new Mock<IDurableActivityContext>();
             var stepId = Guid.NewGuid();
             var patternActivityType = typeof(MyPatternActivity);
@@ -76,8 +76,8 @@ namespace AppStream.DurablePatterns.Tests
             var resultType = typeof(MyPatternActivityResult);
             var input = new MyPatternActivityInput { Property1 = "value1", Property2 = 42 };
             var serializedInput = JToken.FromObject(input);
-            var functionInput = new ActivityFunctionInput(stepId, stepsConfigEntityId, serializedInput);
-            var stepConfiguration = new StepConfiguration(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
+            var functionInput = new ActivityFunctionInput(stepId, stepsEntityId, serializedInput);
+            var stepConfiguration = new Step(stepId, StepType.ActivityFunction, patternActivityType, inputType, resultType, null);
             var expectedActivityResult = new MyPatternActivityResult { Property3 = "result3", Property4 = true };
             var patternActivity = new MyPatternActivity(expectedActivityResult);
 
@@ -88,13 +88,13 @@ namespace AppStream.DurablePatterns.Tests
                 .Setup(factory => factory.Create<MyPatternActivityInput, MyPatternActivityResult>(typeof(MyPatternActivity)))
                 .Returns(patternActivity);
             _mockDurableEntityClient
-                .Setup(c => c.ReadEntityStateAsync<StepsConfigEntity>(stepsConfigEntityId, null, null))
-                .ReturnsAsync(new EntityStateResponse<StepsConfigEntity>
+                .Setup(c => c.ReadEntityStateAsync<StepsEntity>(stepsEntityId, null, null))
+                .ReturnsAsync(new EntityStateResponse<StepsEntity>
                 {
                     EntityExists = true,
-                    EntityState = new StepsConfigEntity
+                    EntityState = new StepsEntity
                     {
-                        Steps = new Dictionary<Guid, StepConfiguration>
+                        Steps = new Dictionary<Guid, Step>
                         {
                             { stepId, stepConfiguration }
                         }

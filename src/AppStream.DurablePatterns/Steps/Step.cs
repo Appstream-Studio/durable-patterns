@@ -1,6 +1,6 @@
-﻿namespace AppStream.DurablePatterns.StepsConfig
+﻿namespace AppStream.DurablePatterns.Steps
 {
-    public record StepConfiguration(
+    public record Step(
         Guid StepId,
         StepType StepType,
         Type PatternActivityType,
