@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
-using AppStream.DurablePatterns.StepsConfig.ConfigurationBag;
+using AppStream.DurablePatterns.Steps.Entity;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Newtonsoft.Json.Linq;
@@ -13,22 +13,21 @@ namespace AppStream.DurablePatterns.ActivityFunctions
         public const string FunctionName = "AppStream-DurablePatterns-ActivityFunction";
 
         private readonly IPatternActivityFactory _patternActivityFactory;
-        private readonly IStepConfigurationBag _stepConfigurationBag;
 
         public ActivityFunction(
-            IPatternActivityFactory patternActivityFactory,
-            IStepConfigurationBag stepConfigurationBag)
+            IPatternActivityFactory patternActivityFactory)
         {
             _patternActivityFactory = patternActivityFactory;
-            _stepConfigurationBag = stepConfigurationBag;
         }
 
         [FunctionName(FunctionName)]
-        public Task<ActivityFunctionResult> RunWorker(
-            [ActivityTrigger] IDurableActivityContext context)
+        public async Task<ActivityFunctionResult> RunWorker(
+            [ActivityTrigger] IDurableActivityContext context,
+            [DurableClient] IDurableEntityClient durableClient)
         {
             var functionInput = context.GetInput<ActivityFunctionInput>();
-            var stepConfiguration = _stepConfigurationBag.Get(functionInput.StepId);
+            var stepsResponse = await durableClient.ReadEntityStateAsync<StepsEntity>(functionInput.StepsEntityId);
+            var stepConfiguration = stepsResponse.EntityState.Steps![functionInput.StepId];
 
             object? input = null;
             if (functionInput.Input != null)
@@ -42,7 +41,7 @@ namespace AppStream.DurablePatterns.ActivityFunctions
                 .MakeGenericMethod(stepConfiguration.PatternActivityInputType, stepConfiguration.PatternActivityResultType)
                 .Invoke(this, new object?[] { stepConfiguration.PatternActivityType, input })!;
 
-            return task;
+            return await task;
         }
 
         private async Task<ActivityFunctionResult> RunInternal<TActivityInput, TActivityResult>(

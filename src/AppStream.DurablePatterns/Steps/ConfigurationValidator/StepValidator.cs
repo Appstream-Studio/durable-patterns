@@ -1,10 +1,10 @@
-﻿namespace AppStream.DurablePatterns.StepsConfig.ConfigurationValidator
+﻿namespace AppStream.DurablePatterns.Steps.ConfigurationValidator
 {
-    internal class StepConfigurationValidator : IStepConfigurationValidator
+    internal class StepValidator : IStepValidator
     {
-        public void Validate(StepConfiguration stepConfiguration, StepConfiguration? previousStepConfiguration)
+        public void Validate(Step stepConfiguration, Step? previousStepConfiguration)
         {
-            if (stepConfiguration == null) 
+            if (stepConfiguration == null)
             {
                 throw new ArgumentNullException(nameof(stepConfiguration));
             }
@@ -19,9 +19,9 @@
 
             if (!previousStepResultType.IsAssignableTo(currentStepInputType))
             {
-                throw new InvalidStepConfigurationException(
-                    stepConfiguration.PatternActivityType, 
-                    currentStepInputType, 
+                throw new InvalidStepException(
+                    stepConfiguration.PatternActivityType,
+                    currentStepInputType,
                     previousStepConfiguration.PatternActivityType,
                     previousStepResultType);
             }

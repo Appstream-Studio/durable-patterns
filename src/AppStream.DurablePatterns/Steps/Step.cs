@@ -1,8 +1,6 @@
-﻿using AppStream.DurablePatterns.Builder;
-
-namespace AppStream.DurablePatterns.StepsConfig
+﻿namespace AppStream.DurablePatterns.Steps
 {
-    internal record StepConfiguration(
+    public record Step(
         Guid StepId,
         StepType StepType,
         Type PatternActivityType,
