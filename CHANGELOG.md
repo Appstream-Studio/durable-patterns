@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2023-06-07
+
+### Fixed
+
+- Steps configuration being lost on framework unloading the orchestrator. The steps are now stored in a durable entity instead of an in-memory dictionary.
+
 ## [1.0.0] - 2023-05-12
 
 ### Added
