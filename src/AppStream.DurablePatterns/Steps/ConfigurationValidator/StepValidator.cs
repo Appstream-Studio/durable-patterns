@@ -20,7 +20,7 @@
             if (!previousStepResultType.IsAssignableTo(currentStepInputType))
             {
                 var patternActivityType = Type.GetType(stepConfiguration.PatternActivityTypeAssemblyQualifiedName)!;
-                var previousPatternActivityType = Type.GetType(previousStepConfiguration.PatternActivityTypeAssemblyQualifiedName);
+                var previousPatternActivityType = Type.GetType(previousStepConfiguration.PatternActivityTypeAssemblyQualifiedName)!;
 
                 throw new InvalidStepException(
                     patternActivityType,

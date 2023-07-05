@@ -1,23 +1,22 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.Steps;
-using AppStream.DurablePatterns.Steps.Entity;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
 using Moq;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace AppStream.DurablePatterns.Tests
 {
     [TestFixture]
     public class ActivityFunctionStepExecutorTests
     {
-        private Mock<IDurableOrchestrationContext> _mockContext;
+        private Mock<TaskOrchestrationContext> _mockContext;
         private ActivityFunctionStepExecutor _stepExecutor;
 
         [SetUp]
         public void Setup()
         {
-            _mockContext = new Mock<IDurableOrchestrationContext>();
+            _mockContext = new Mock<TaskOrchestrationContext>();
             _stepExecutor = new ActivityFunctionStepExecutor();
         }
 
@@ -25,22 +24,25 @@ namespace AppStream.DurablePatterns.Tests
         public async Task ExecuteStepInternalAsync_ReturnsStepExecutionResult()
         {
             // Arrange
-            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
             var step = new Step(
                 Guid.NewGuid(),
                 StepType.ActivityFunction,
-                typeof(MyPatternActivity),
-                typeof(string),
-                typeof(string),
+                typeof(MyPatternActivity).AssemblyQualifiedName!,
+                typeof(string).AssemblyQualifiedName!,
+                typeof(string).AssemblyQualifiedName!,
                 null);
             var input = "test input";
             var expectedResult = "test result";
-            var activityResult = new ActivityFunctionResult(JToken.FromObject(expectedResult), TimeSpan.FromSeconds(1));
-            _mockContext.Setup(x => x.CallActivityAsync<ActivityFunctionResult>(ActivityFunction.FunctionName, It.IsAny<ActivityFunctionInput>()))
+            var activityResult = new ActivityFunctionResult(JsonSerializer.SerializeToElement(expectedResult), TimeSpan.FromSeconds(1));
+            _mockContext
+                .Setup(x => x.CallActivityAsync<ActivityFunctionResult>(
+                    ActivityFunction.FunctionName, 
+                    It.IsAny<ActivityFunctionInput>(), 
+                    It.IsAny<TaskOptions?>()))
                 .ReturnsAsync(activityResult);
 
             // Act
-            var result = await _stepExecutor.ExecuteStepAsync(step, stepsEntityId, _mockContext.Object, input);
+            var result = await _stepExecutor.ExecuteStepAsync(step, _mockContext.Object, input);
 
             // Assert
             Assert.Multiple(() =>

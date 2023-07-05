@@ -27,7 +27,7 @@ namespace AppStream.DurablePatterns.ActivityFunctions
             object? activityInput = null;
             if (input.ActivityInput != null)
             {
-                var inputType = Type.GetType(stepConfiguration.PatternActivityInputTypeAssemblyQualifiedName);
+                var inputType = Type.GetType(stepConfiguration.PatternActivityInputTypeAssemblyQualifiedName)!;
                 activityInput = ((JsonElement)input.ActivityInput).Deserialize(inputType);
             }
 
