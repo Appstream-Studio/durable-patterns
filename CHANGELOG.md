@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-07-05
+
+### Changed
+
+- Framework migrated to isolated-process so it can be used with [all dotnet versions](https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide#supported-versions).
+- Steps configuration is now passed from the orchestrator to activity functions as input.
+
 ## [1.0.2] - 2023-06-07
 
 ### Fixed

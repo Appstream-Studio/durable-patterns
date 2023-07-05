@@ -1,5 +1,5 @@
 ﻿using AppStream.DurablePatterns.Steps;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutor
 {
@@ -7,8 +7,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor
     {
         Task<StepExecutionResult> ExecuteStepAsync(
             Step step,
-            EntityId stepsEntityId,
-            IDurableOrchestrationContext context,
+            TaskOrchestrationContext context,
             object? input);
     }
 }

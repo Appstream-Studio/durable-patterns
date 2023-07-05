@@ -19,7 +19,7 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             _logger.LogInformation("this block of code is executed in a single activity function");
             foreach (var item in allItems)
             {
-                _logger.LogInformation($"\thello {item.Name} from fan in activity");
+                _logger.LogInformation("\thello {itemName} from fan in activity", item.Name);
             }
 
             _logger.LogInformation("this is the last activity; orchestration finished");

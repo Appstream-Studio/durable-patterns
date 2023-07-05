@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Microsoft.DurableTask;
 
 namespace AppStream.DurablePatterns
 {
@@ -11,8 +11,8 @@ namespace AppStream.DurablePatterns
         /// Specifies the orchestration context for the Durable Function orchestration.
         /// </summary>
         /// <param name="context">The orchestration context.</param>
-        /// <returns>An instance of <see cref="IDurablePatternsWithContext"/>.</returns>
-        IDurablePatternsWithContext WithContext(IDurableOrchestrationContext context);
+        /// <returns>An instance of <see cref="TaskOrchestrationContext"/>.</returns>
+        IDurablePatternsWithContext WithContext(TaskOrchestrationContext context);
     }
 
     /// <summary>

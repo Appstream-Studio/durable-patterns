@@ -2,8 +2,7 @@
 using AppStream.DurablePatterns.Executor.StepExecutor;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
 using AppStream.DurablePatterns.Steps;
-using AppStream.DurablePatterns.Steps.Entity;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
 using Moq;
 
 namespace AppStream.DurablePatterns.Tests
@@ -25,40 +24,37 @@ namespace AppStream.DurablePatterns.Tests
         public void ExecuteAsync_WithEmptySteps_ThrowsArgumentException()
         {
             // Arrange
-            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
-            var context = Mock.Of<IDurableOrchestrationContext>();
+            var context = Mock.Of<TaskOrchestrationContext>();
             var steps = new List<Step>();
 
             // Act & Assert
-            Assert.ThrowsAsync<ArgumentException>(() => _executor.ExecuteAsync(steps, stepsEntityId, context));
+            Assert.ThrowsAsync<ArgumentException>(() => _executor.ExecuteAsync(steps, context));
         }
 
         [Test]
         public void ExecuteAsync_WithNullSteps_ThrowsArgumentNullException()
         {
             // Arrange
-            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
-            var context = Mock.Of<IDurableOrchestrationContext>();
+            var context = Mock.Of<TaskOrchestrationContext>();
 
             // Act & Assert
-            Assert.ThrowsAsync<ArgumentNullException>(() => _executor.ExecuteAsync(null!, stepsEntityId, context));
+            Assert.ThrowsAsync<ArgumentNullException>(() => _executor.ExecuteAsync(null!, context));
         }
 
         [Test]
         public void ExecuteAsync_WithFailedActivityStep_ThrowsPatternActivityFailedException()
         {
             // Arrange
-            var stepsEntityId = new EntityId(nameof(StepsEntity), Guid.NewGuid().ToString());
-            var context = Mock.Of<IDurableOrchestrationContext>();
+            var context = Mock.Of<TaskOrchestrationContext>();
             var stepExecutorMock = new Mock<IStepExecutor>();
             var steps = new List<Step> 
             {
                 new Step(
                     Guid.NewGuid(),
                     StepType.FanOutFanIn,
-                    typeof(SampleActivity),
-                    typeof(string),
-                    typeof(int),
+                    typeof(SampleActivity).AssemblyQualifiedName!,
+                    typeof(string).AssemblyQualifiedName!,
+                    typeof(int).AssemblyQualifiedName!,
                     new FanOutFanInOptions(10, 5))
             };
 
@@ -66,7 +62,7 @@ namespace AppStream.DurablePatterns.Tests
                 null, TimeSpan.Zero, steps[0].StepId, steps[0].StepType, false, new Exception());
             stepExecutorMock
                 .Setup(m => m.ExecuteStepAsync(
-                    steps[0], stepsEntityId, context, null))
+                    steps[0], context, null))
                 .ReturnsAsync(failedStepResult);
 
             _stepExecutorFactoryMock
@@ -75,7 +71,7 @@ namespace AppStream.DurablePatterns.Tests
 
             // Act & Assert
             Assert.ThrowsAsync<PatternActivityFailedException>(
-                () => _executor.ExecuteAsync(steps, stepsEntityId, context));
+                () => _executor.ExecuteAsync(steps, context));
         }
 
         private class SampleActivity : IPatternActivity<string, int>

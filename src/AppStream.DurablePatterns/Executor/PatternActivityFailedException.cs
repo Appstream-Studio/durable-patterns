@@ -2,8 +2,8 @@
 {
     internal class PatternActivityFailedException : Exception
     {
-        public PatternActivityFailedException(Type patternActivityType, Exception exception)
-            : base($"Pattern activity '{patternActivityType.Name}' failed. Breaking orchestration execution. Check the inner exception for details.", exception)
+        public PatternActivityFailedException(string patternActivityType, Exception exception)
+            : base($"Pattern activity '{patternActivityType}' failed. Breaking orchestration execution. Check the inner exception for details.", exception)
         {
         }
     }

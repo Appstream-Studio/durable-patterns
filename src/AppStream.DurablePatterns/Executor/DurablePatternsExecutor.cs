@@ -2,7 +2,7 @@
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
 using AppStream.DurablePatterns.Steps;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
 
 namespace AppStream.DurablePatterns.Executor
 {
@@ -17,8 +17,7 @@ namespace AppStream.DurablePatterns.Executor
 
         public async Task<ExecutionResult> ExecuteAsync(
             IEnumerable<Step> steps,
-            EntityId stepsEntityId,
-            IDurableOrchestrationContext context)
+            TaskOrchestrationContext context)
         {
             if (steps == null)
             {
@@ -41,11 +40,11 @@ namespace AppStream.DurablePatterns.Executor
                     input = previousStepResult.Result;
                 }
 
-                var stepResult = await executor.ExecuteStepAsync(step, stepsEntityId, context, input);
+                var stepResult = await executor.ExecuteStepAsync(step, context, input);
                 if (!stepResult.Succeeded)
                 {
                     throw new PatternActivityFailedException(
-                        step.PatternActivityType, 
+                        step.PatternActivityTypeAssemblyQualifiedName, 
                         stepResult.Exception!);
                 }
 

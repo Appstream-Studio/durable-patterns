@@ -9,7 +9,11 @@
     },
     "logLevel": {
       "default": "Warning",
-      "AppStream": "Trace"
+      "Function": "Information",
+      "Host.Aggregator": "Warning",
+      "Host.Results": "Warning",
+      "Function.ActivityFunction": "Trace",
+      "Function.ActivityFunction.User": "Trace"
     }
   }
 }

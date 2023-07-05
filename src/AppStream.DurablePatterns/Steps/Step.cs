@@ -3,8 +3,8 @@
     public record Step(
         Guid StepId,
         StepType StepType,
-        Type PatternActivityType,
-        Type PatternActivityInputType,
-        Type PatternActivityResultType,
+        string PatternActivityTypeAssemblyQualifiedName,
+        string PatternActivityInputTypeAssemblyQualifiedName,
+        string PatternActivityResultTypeAssemblyQualifiedName,
         FanOutFanInOptions? FanOutFanInOptions);
 }
