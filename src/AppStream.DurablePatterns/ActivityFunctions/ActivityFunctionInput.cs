@@ -1,6 +1,6 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using AppStream.DurablePatterns.Steps;
 
 namespace AppStream.DurablePatterns.ActivityFunctions
 {
-    internal record ActivityFunctionInput(Guid StepId, EntityId StepsEntityId, object? Input);
+    internal record ActivityFunctionInput(Step Step, object? ActivityInput);
 }

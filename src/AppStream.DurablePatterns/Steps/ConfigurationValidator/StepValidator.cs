@@ -14,15 +14,18 @@
                 return;
             }
 
-            var previousStepResultType = previousStepConfiguration.PatternActivityResultType;
-            var currentStepInputType = stepConfiguration.PatternActivityInputType;
+            var previousStepResultType = Type.GetType(previousStepConfiguration.PatternActivityResultTypeAssemblyQualifiedName)!;
+            var currentStepInputType = Type.GetType(stepConfiguration.PatternActivityInputTypeAssemblyQualifiedName)!;
 
             if (!previousStepResultType.IsAssignableTo(currentStepInputType))
             {
+                var patternActivityType = Type.GetType(stepConfiguration.PatternActivityTypeAssemblyQualifiedName)!;
+                var previousPatternActivityType = Type.GetType(previousStepConfiguration.PatternActivityTypeAssemblyQualifiedName);
+
                 throw new InvalidStepException(
-                    stepConfiguration.PatternActivityType,
+                    patternActivityType,
                     currentStepInputType,
-                    previousStepConfiguration.PatternActivityType,
+                    previousPatternActivityType,
                     previousStepResultType);
             }
         }

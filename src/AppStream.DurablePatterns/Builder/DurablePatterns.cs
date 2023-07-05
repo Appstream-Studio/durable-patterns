@@ -2,8 +2,7 @@
 using AppStream.DurablePatterns.Executor;
 using AppStream.DurablePatterns.Steps;
 using AppStream.DurablePatterns.Steps.ConfigurationValidator;
-using AppStream.DurablePatterns.Steps.Entity;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
 
 namespace AppStream.DurablePatterns.Builder
 {
@@ -14,7 +13,7 @@ namespace AppStream.DurablePatterns.Builder
         private readonly IPatternActivityContractResolver _contractResolver;
         private readonly IStepValidator _stepValidator;
 
-        private IDurableOrchestrationContext? _context;
+        private TaskOrchestrationContext? _context;
 
         public DurablePatterns(
             IDurablePatternsExecutor executor,
@@ -27,7 +26,7 @@ namespace AppStream.DurablePatterns.Builder
             _stepValidator = stepValidator;
         }
 
-        private IDurableOrchestrationContext Context
+        private TaskOrchestrationContext Context
         {
             get
             {
@@ -40,21 +39,8 @@ namespace AppStream.DurablePatterns.Builder
             }
         }
 
-        public async Task<ExecutionResult> ExecuteAsync()
-        {
-            var stepsEntityId = new EntityId(
-                nameof(StepsEntity),
-                Context.NewGuid().ToString());
-
-            var proxy = Context.CreateEntityProxy<IStepsEntity>(stepsEntityId);
-            var stepsDict = _steps.ToDictionary(s => s.StepId, s => s);
-            await proxy.Set(stepsDict);
-
-            return await _executor.ExecuteAsync(
-                _steps,
-                stepsEntityId,
-                Context);
-        }
+        public Task<ExecutionResult> ExecuteAsync() 
+            => _executor.ExecuteAsync(_steps, Context);
 
         public IDurablePatternsContinuation FanOutFanIn<TActivity>(FanOutFanInOptions options) where TActivity : IPatternActivity
             => RunActivityInternal<TActivity>(StepType.FanOutFanIn, options);
@@ -71,9 +57,9 @@ namespace AppStream.DurablePatterns.Builder
                 var stepConfiguration = new Step(
                     stepId,
                     stepType,
-                    typeof(TActivity),
-                    activityContract.InputType,
-                    activityContract.ResultType,
+                    typeof(TActivity).AssemblyQualifiedName!,
+                    activityContract.InputType.AssemblyQualifiedName!,
+                    activityContract.ResultType.AssemblyQualifiedName!,
                     options);
 
                 _stepValidator.Validate(stepConfiguration, _steps.LastOrDefault());
@@ -83,7 +69,7 @@ namespace AppStream.DurablePatterns.Builder
             return this;
         }
 
-        public IDurablePatternsWithContext WithContext(IDurableOrchestrationContext context)
+        public IDurablePatternsWithContext WithContext(TaskOrchestrationContext context)
         {
             _context = context;
             return this;

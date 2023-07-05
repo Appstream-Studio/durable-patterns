@@ -1,10 +1,8 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions.PatternActivityFactory;
-using AppStream.DurablePatterns.Steps.Entity;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Newtonsoft.Json.Linq;
+using Microsoft.Azure.Functions.Worker;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 
 namespace AppStream.DurablePatterns.ActivityFunctions
 {
@@ -14,32 +12,35 @@ namespace AppStream.DurablePatterns.ActivityFunctions
 
         private readonly IPatternActivityFactory _patternActivityFactory;
 
-        public ActivityFunction(
-            IPatternActivityFactory patternActivityFactory)
+        public ActivityFunction(IPatternActivityFactory patternActivityFactory)
         {
             _patternActivityFactory = patternActivityFactory;
         }
 
-        [FunctionName(FunctionName)]
-        public async Task<ActivityFunctionResult> RunWorker(
-            [ActivityTrigger] IDurableActivityContext context,
-            [DurableClient] IDurableEntityClient durableClient)
+        [Function(FunctionName)]
+        public async Task<ActivityFunctionResult> RunAsync(
+            [ActivityTrigger] ActivityFunctionInput input,
+            FunctionContext context)
         {
-            var functionInput = context.GetInput<ActivityFunctionInput>();
-            var stepsResponse = await durableClient.ReadEntityStateAsync<StepsEntity>(functionInput.StepsEntityId);
-            var stepConfiguration = stepsResponse.EntityState.Steps![functionInput.StepId];
+            var stepConfiguration = input.Step;
 
-            object? input = null;
-            if (functionInput.Input != null)
+            object? activityInput = null;
+            if (input.ActivityInput != null)
             {
-                var inputType = stepConfiguration.PatternActivityInputType;
-                input = ((JToken)functionInput.Input).ToObject(inputType);
+                var inputType = Type.GetType(stepConfiguration.PatternActivityInputTypeAssemblyQualifiedName);
+                activityInput = ((JsonElement)input.ActivityInput).Deserialize(inputType);
             }
 
             var task = (Task<ActivityFunctionResult>)GetType()
                 .GetMethod(nameof(RunInternal), BindingFlags.NonPublic | BindingFlags.Instance)!
-                .MakeGenericMethod(stepConfiguration.PatternActivityInputType, stepConfiguration.PatternActivityResultType)
-                .Invoke(this, new object?[] { stepConfiguration.PatternActivityType, input })!;
+                .MakeGenericMethod(
+                    Type.GetType(stepConfiguration.PatternActivityInputTypeAssemblyQualifiedName)!,
+                    Type.GetType(stepConfiguration.PatternActivityResultTypeAssemblyQualifiedName)!)
+                .Invoke(this, new object?[]
+                {
+                    Type.GetType(stepConfiguration.PatternActivityTypeAssemblyQualifiedName),
+                    activityInput
+                })!;
 
             return await task;
         }

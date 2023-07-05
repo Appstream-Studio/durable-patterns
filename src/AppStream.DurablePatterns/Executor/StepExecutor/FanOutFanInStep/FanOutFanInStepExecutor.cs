@@ -1,9 +1,9 @@
 ﻿using AppStream.DurablePatterns.ActivityFunctions;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
 using AppStream.DurablePatterns.Steps;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Newtonsoft.Json.Linq;
+using Microsoft.DurableTask;
 using System.Reflection;
+using System.Text.Json;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 {
@@ -21,8 +21,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
         protected override async Task<StepExecutionResult> ExecuteStepInternalAsync(
             Step step,
-            EntityId stepsEntityId,
-            IDurableOrchestrationContext context,
+            TaskOrchestrationContext context,
             object? input)
         {
             if (input == null)
@@ -37,10 +36,11 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
                     nameof(input));
             }
 
-            if (!step.PatternActivityResultType.IsGenericCollection())
+            var patternActivityResultType = Type.GetType(step.PatternActivityResultTypeAssemblyQualifiedName)!;
+            if (!patternActivityResultType.IsGenericCollection())
             {
                 throw new ArgumentException(
-                    $"Cannot execute FanOutFanIn step. Result type '{step.PatternActivityResultType.FullName}' has to implement '{typeof(ICollection<>).FullName}' interface and cannot be an array.",
+                    $"Cannot execute FanOutFanIn step. Result type '{patternActivityResultType.FullName}' has to implement '{typeof(ICollection<>).FullName}' interface and cannot be an array.",
                     nameof(step));
             }
 
@@ -51,17 +51,16 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
                 .MakeGenericMethod(
                     input.GetType(),
                     input.GetType().GetCollectionElementType()!,
-                    step.PatternActivityResultType,
-                    step.PatternActivityResultType.GetCollectionElementType()!)
-                .Invoke(this, new object?[] { step, stepsEntityId, context, input })!;
+                    patternActivityResultType,
+                    patternActivityResultType.GetCollectionElementType()!)
+                .Invoke(this, new object?[] { step, context, input })!;
 
             return result;
         }
 
         private async Task<FanOutFanInStepExecutionResult> ExecuteFanOutFanInInternalAsync<TInputCollection, TInputItem, TResultCollection, TResultItem>(
             Step step,
-            EntityId stepsEntityId,
-            IDurableOrchestrationContext context,
+            TaskOrchestrationContext context,
             TInputCollection input)
             where TInputCollection : ICollection<TInputItem>
             where TResultCollection : ICollection<TResultItem>
@@ -88,7 +87,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
                 var task = context.CallActivityAsync<ActivityFunctionResult>(
                     ActivityFunction.FunctionName,
-                    new ActivityFunctionInput(step.StepId, stepsEntityId, activityInput));
+                    new ActivityFunctionInput(step, activityInput));
 
                 workInProgress.Add(task);
 
@@ -127,8 +126,8 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
             var combinedResults = Activator.CreateInstance<TResultCollection>();
             var deserializedResults = results
                 .Select(r => r.ActivityResult)
-                .Cast<JToken>()
-                .Select(t => t.ToObject<TResultCollection>())
+                .Cast<JsonElement>()
+                .Select(t => t.Deserialize<TResultCollection>())
                 .SelectMany(r => r!);
 
             foreach (var resultItem in deserializedResults)

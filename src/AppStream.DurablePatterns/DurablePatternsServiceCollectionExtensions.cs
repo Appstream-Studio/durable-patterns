@@ -23,15 +23,15 @@ namespace AppStream.DurablePatterns
         public static IServiceCollection AddDurablePatterns(this IServiceCollection services, Action<DurablePatternsConfiguration> configure) 
         {
             services
-                .AddSingleton<IDurablePatterns, Builder.DurablePatterns>()
-                .AddSingleton<IPatternActivityContractResolver, PatternActivityContractResolver>()
-                .AddSingleton<IStepValidator, StepValidator>()
-                .AddSingleton<IDurablePatternsExecutor, DurablePatternsExecutor>()
-                .AddSingleton<IStepExecutorFactory, StepExecutorFactory>()
-                .AddSingleton<IPatternActivityFactory, PatternActivityFactory>()
-                .AddSingleton<ActivityFunctionStepExecutor>()
-                .AddSingleton<FanOutFanInStepExecutor>()
-                .AddSingleton<IFanOutFanInOptionsValidator, FanOutFanInOptionsValidator>();
+                .AddTransient<IDurablePatterns, Builder.DurablePatterns>()
+                .AddTransient<IPatternActivityContractResolver, PatternActivityContractResolver>()
+                .AddTransient<IStepValidator, StepValidator>()
+                .AddTransient<IDurablePatternsExecutor, DurablePatternsExecutor>()
+                .AddTransient<IStepExecutorFactory, StepExecutorFactory>()
+                .AddTransient<IPatternActivityFactory, PatternActivityFactory>()
+                .AddTransient<ActivityFunctionStepExecutor>()
+                .AddTransient<FanOutFanInStepExecutor>()
+                .AddTransient<IFanOutFanInOptionsValidator, FanOutFanInOptionsValidator>();
 
             configure(new DurablePatternsConfiguration(services));
 

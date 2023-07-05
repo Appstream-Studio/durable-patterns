@@ -1,16 +1,14 @@
-using AppStream.DurablePatterns;
 using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using System.Threading.Tasks;
 
-namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPatterns
+namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator
 {
     public class CombinedOrchestrator
     {
+        public const string OrchestratorName = nameof(CombinedOrchestrator);
+
         private readonly IDurablePatterns _patterns;
 
         public CombinedOrchestrator(IDurablePatterns patterns)
@@ -18,31 +16,17 @@ namespace AppStream.Azure.WebJobs.Extensions.DurableTask.Samples.CombinedPattern
             _patterns = patterns;
         }
 
-        [FunctionName("CombinedOrchestrator")]
-        public Task<ExecutionResult> RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+        [Function(OrchestratorName)]
+        public Task<ExecutionResult> RunAsync([OrchestrationTrigger] TaskOrchestrationContext context)
         {
             return _patterns
                 .WithContext(context)
                 .RunActivity<GetFooItems>()
                 .FanOutFanIn<FanOut>(new FanOutFanInOptions(
-                    BatchSize: 2, 
+                    BatchSize: 2,
                     ParallelActivityFunctionsCap: 2))
                 .RunActivity<FanIn>()
                 .ExecuteAsync();
-        }
-
-        [FunctionName("CombinedOrchestrator_HttpStart")]
-        public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestMessage req,
-            [DurableClient] IDurableOrchestrationClient starter,
-            ILogger log)
-        {
-            string instanceId = await starter.StartNewAsync("CombinedOrchestrator", null);
-
-            log.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
-
-            return starter.CreateCheckStatusResponse(req, instanceId);
         }
     }
 }
