@@ -123,7 +123,7 @@ internal class MyOrchestrator
         _patterns = patterns;
     }
 
-    [FunctionName("Orchestrator")]
+    [Function("Orchestrator")]
     public Task<ExecutionResult> RunOrchestrator(
         [OrchestrationTrigger] TaskOrchestrationContext context)
     {
