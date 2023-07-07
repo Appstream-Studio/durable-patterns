@@ -123,9 +123,9 @@ internal class MyOrchestrator
         _patterns = patterns;
     }
 
-    [FunctionName("Orchestrator")]
+    [Function("Orchestrator")]
     public Task<ExecutionResult> RunOrchestrator(
-        [OrchestrationTrigger] IDurableOrchestrationContext context)
+        [OrchestrationTrigger] TaskOrchestrationContext context)
     {
         return _patterns
             .WithContext(context)
