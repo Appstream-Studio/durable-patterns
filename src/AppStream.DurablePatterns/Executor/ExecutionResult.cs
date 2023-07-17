@@ -11,15 +11,19 @@
     }
 
     public record StepExecutionResultSummary(
-        string Name,
+        string StepType,
+        string ActivityType,
+        object? Output,
         TimeSpan Duration);
 
     public record FanOutFanInStepExecutionResultSummary(
-        string Name,
+        string StepType,
+        string ActivityType,
+        object? Output,
         TimeSpan Duration,
         FanOutFanInOptions FanOutFanInOptions,
         TimeSpan? AverageBatchProcessingDuration,
         TimeSpan? AverageItemProcessingDuration,
         int? BatchesProcessed,
-        int? ItemsProcessed) : StepExecutionResultSummary(Name, Duration);
+        int? ItemsProcessed) : StepExecutionResultSummary(StepType, ActivityType, Output, Duration);
 }

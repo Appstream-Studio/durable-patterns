@@ -27,20 +27,16 @@ To use this library you need to instruct durable functions framework to look for
 
 ### Example - fan out / fan in
 
-#### Function Startup
+#### Program.cs
 ```csharp
 using AppStream.DurablePatterns;
 
-[assembly: FunctionsStartup(typeof(Startup))]
+var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureServices(services => services.AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(GetItems).Assembly))
+    .Build();
 
-internal class Startup : FunctionsStartup
-{
-    public override void Configure(IFunctionsHostBuilder builder)
-    {
-        builder.Services
-            .AddDurablePatterns(cfg => cfg.AddActivitiesFromAssembly(typeof(GetItems).Assembly));
-    }
-}
+host.Run();
 ```
 
 #### IPatternActivity classes
@@ -56,9 +52,11 @@ internal class GetItems : IPatternActivity<List<Item>>
         _repository = repository;
     }
 
-    public Task<List<Item>> RunAsync(object? input)
+    public async Task<PatternActivityResult<List<Item>>> RunAsync(object? input)
     {
-        return _repository.GetItemsAsync();
+        return new PatternActivityResult<List<Item>>(
+            value: await _repository.GetItemsAsync(),
+            output: new { whateverYouWantToBeDisplayedInOrchestratorOutput = true });
     }
 }
 
@@ -71,7 +69,7 @@ internal class FanOut : IPatternActivity<List<Item>, List<Item>>
         _service = service;
     }
 
-    public Task<List<Item>> RunAsync(List<Item> input)
+    public Task<PatternActivityResult<List<Item>>> RunAsync(List<Item> input)
     {
         // this block of code will be executed in parallel batches
         var processedItems = new List<Item>();
@@ -81,7 +79,7 @@ internal class FanOut : IPatternActivity<List<Item>, List<Item>>
             processedItems.Add(_service.Process(item));
         }
 
-        return Task.FromResult(processedItems);
+        return Task.FromResult(new PatternActivityResult<List<Item>>(processedItems, new { foo = "bar" }));
     }
 }
 
@@ -94,7 +92,7 @@ internal class FanIn : IPatternActivity<List<Item>, List<Item>>
         _service = service;
     }
 
-    public Task<List<Item>> RunAsync(List<Item> input)
+    public Task<PatternActivityResult<List<Item>>> RunAsync(List<Item> input)
     {
         // this block of code will be executed once and the input will be all items returned from all FanOut activities
         var processedItems = new List<Item>();
@@ -104,7 +102,7 @@ internal class FanIn : IPatternActivity<List<Item>, List<Item>>
             processedItems.Add(_service.Process(item));
         }
 
-        return Task.FromResult(processedItems);
+        return Task.FromResult(new PatternActivityResult<List<Item>>(processedItems, new { foo = "bar" }));
     }
 }
 ```
@@ -123,9 +121,9 @@ internal class MyOrchestrator
         _patterns = patterns;
     }
 
-    [FunctionName("Orchestrator")]
+    [Function("Orchestrator")]
     public Task<ExecutionResult> RunOrchestrator(
-        [OrchestrationTrigger] IDurableOrchestrationContext context)
+        [OrchestrationTrigger] TaskOrchestrationContext context)
     {
         return _patterns
             .WithContext(context)

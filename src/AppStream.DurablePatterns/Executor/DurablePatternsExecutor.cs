@@ -54,19 +54,24 @@ namespace AppStream.DurablePatterns.Executor
             var resultsSummaries = results
                 .Select(r => r switch
                 {
-                    FanOutFanInStepExecutionResult fofi => new FanOutFanInStepExecutionResultSummary(
-                        fofi.StepType.ToString(),
-                        fofi.Duration,
-                        fofi.Options,
-                        fofi.AverageBatchProcessingDuration,
-                        fofi.AverageItemProcessingDuration,
-                        fofi.BatchesProcessed,
-                        fofi.ItemsProcessed),
+                    FanOutFanInStepExecutionResult res => new FanOutFanInStepExecutionResultSummary(
+                        res.StepType.ToString(),
+                        res.PatternActivityType,
+                        res.Output,
+                        res.Duration,
+                        res.Options,
+                        res.AverageBatchProcessingDuration,
+                        res.AverageItemProcessingDuration,
+                        res.BatchesProcessed,
+                        res.ItemsProcessed),
 
                     StepExecutionResult res => new StepExecutionResultSummary(
                         res.StepType.ToString(),
+                        res.PatternActivityType,
+                        res.Output,
                         res.Duration)
                 })
+                .Reverse()
                 .ToList();
 
             return new ExecutionResult(resultsSummaries);

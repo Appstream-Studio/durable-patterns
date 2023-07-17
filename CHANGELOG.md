@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2023-07-17
+
+### Changed
+
+- All activities now return `PatternActivityResult<TResult>` wrapping the result and an "output" object which is used to create orchestrator output.
+
 ## [2.0.0] - 2023-07-05
 
 ### Changed

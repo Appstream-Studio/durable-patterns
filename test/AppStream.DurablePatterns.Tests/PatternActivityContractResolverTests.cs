@@ -31,7 +31,7 @@ namespace AppStream.DurablePatterns.Tests
 
         private class SampleActivity : IPatternActivity<string, int>
         {
-            public Task<int> RunAsync(string input)
+            public Task<PatternActivityResult<int>> RunAsync(string input)
             {
                 throw new NotImplementedException();
             }

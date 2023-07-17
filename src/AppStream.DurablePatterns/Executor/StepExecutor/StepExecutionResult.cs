@@ -3,7 +3,9 @@
 namespace AppStream.DurablePatterns.Executor.StepExecutor
 {
     internal record StepExecutionResult(
+        string PatternActivityType,
         object? Result,
+        object? Output,
         TimeSpan Duration,
         Guid StepId,
         StepType StepType,

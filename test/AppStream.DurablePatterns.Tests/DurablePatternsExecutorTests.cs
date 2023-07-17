@@ -59,7 +59,7 @@ namespace AppStream.DurablePatterns.Tests
             };
 
             var failedStepResult = new StepExecutionResult(
-                null, TimeSpan.Zero, steps[0].StepId, steps[0].StepType, false, new Exception());
+                typeof(SampleActivity).AssemblyQualifiedName!, null, null, TimeSpan.Zero, steps[0].StepId, steps[0].StepType, false, new Exception());
             stepExecutorMock
                 .Setup(m => m.ExecuteStepAsync(
                     steps[0], context, null))
@@ -76,7 +76,7 @@ namespace AppStream.DurablePatterns.Tests
 
         private class SampleActivity : IPatternActivity<string, int>
         {
-            public Task<int> RunAsync(string input)
+            public Task<PatternActivityResult<int>> RunAsync(string input)
             {
                 throw new NotImplementedException();
             }

@@ -106,8 +106,11 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 
             var combinedResults = CombineResults<TResultCollection, TResultItem>(results);
             var averageBatchDuration = TimeSpan.FromMilliseconds(results.Average(r => r.Duration.Milliseconds));
+            var outputs = results.Select(r => r.Output).ToArray();
             return new FanOutFanInStepExecutionResult(
+                step.PatternActivityTypeAssemblyQualifiedName,
                 combinedResults,
+                outputs,
                 context.CurrentUtcDateTime - Started,
                 step.StepId,
                 StepType,

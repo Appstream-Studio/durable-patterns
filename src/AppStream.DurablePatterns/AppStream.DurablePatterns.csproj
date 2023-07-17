@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<AssemblyName>AppStream.DurablePatterns</AssemblyName>
 		<RootNamespace>AppStream.DurablePatterns</RootNamespace>
-		<MajorVersion>2</MajorVersion>
+		<MajorVersion>3</MajorVersion>
 		<MinorVersion>0</MinorVersion>
 		<PatchVersion>0</PatchVersion>
 		<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion)</Version>
@@ -43,10 +43,6 @@
 
 	<ItemGroup>
 	  <None Include="..\..\assets\icon.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>

@@ -4,6 +4,7 @@ using AppStream.DurablePatterns.Steps;
 using Microsoft.DurableTask;
 using Moq;
 using System.Text.Json;
+using static AppStream.DurablePatterns.Tests.ActivityFunctionTests;
 
 namespace AppStream.DurablePatterns.Tests
 {
@@ -33,7 +34,7 @@ namespace AppStream.DurablePatterns.Tests
                 null);
             var input = "test input";
             var expectedResult = "test result";
-            var activityResult = new ActivityFunctionResult(JsonSerializer.SerializeToElement(expectedResult), TimeSpan.FromSeconds(1));
+            var activityResult = new ActivityFunctionResult(JsonSerializer.SerializeToElement(expectedResult), null, TimeSpan.FromSeconds(1));
             _mockContext
                 .Setup(x => x.CallActivityAsync<ActivityFunctionResult>(
                     ActivityFunction.FunctionName, 
@@ -57,9 +58,9 @@ namespace AppStream.DurablePatterns.Tests
 
         public class MyPatternActivity : IPatternActivity<string, string>
         {
-            public Task<string> RunAsync(string input)
+            public Task<PatternActivityResult<string>> RunAsync(string input)
             {
-                return Task.FromResult(input);
+                return Task.FromResult(new PatternActivityResult<string>(input, null));
             }
         }
     }

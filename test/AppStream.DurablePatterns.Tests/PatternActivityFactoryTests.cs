@@ -58,25 +58,25 @@ namespace AppStream.DurablePatterns.Tests
 
     internal class IntToStringActivity : IPatternActivity<int, string>
     {
-        public async Task<string> RunAsync(int input)
+        public Task<PatternActivityResult<string>> RunAsync(int input)
         {
-            return await Task.FromResult(input.ToString());
+            return Task.FromResult(new PatternActivityResult<string>(input.ToString(), null));
         }
     }
 
     internal class StringToIntActivity : IPatternActivity<string, int>
     {
-        public async Task<int> RunAsync(string input)
+        public Task<PatternActivityResult<int>> RunAsync(string input)
         {
-            return await Task.FromResult(int.Parse(input));
+            return Task.FromResult(new PatternActivityResult<int>(int.Parse(input), null));
         }
     }
 
     internal class DoubleToIntActivity : IPatternActivity<double, int>
     {
-        public async Task<int> RunAsync(double input)
+        public Task<PatternActivityResult<int>> RunAsync(double input)
         {
-            return await Task.FromResult(Convert.ToInt32(input));
+            return Task.FromResult(new PatternActivityResult<int>(Convert.ToInt32(input), null));
         }
     }
 }

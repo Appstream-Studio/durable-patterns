@@ -14,15 +14,17 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             _logger = logger;
         }
 
-        public Task<List<FooItem>> RunAsync(List<FooItem> batch)
+        public Task<PatternActivityResult<List<FooItem>>> RunAsync(List<FooItem> batch)
         {
             _logger.LogInformation("this block of code is executed in parallel batches");
             foreach (var item in batch)
             {
-                _logger.LogInformation($"\thello {item.Name} from fan out activity");
+                _logger.LogInformation("\thello {itemName} from fan out activity", item.Name);
             }
 
-            return Task.FromResult(batch);
+            return Task.FromResult(new PatternActivityResult<List<FooItem>>(
+                batch,
+                new { itemsProcessedCount = batch.Count }));
         }
     }
 }

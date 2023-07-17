@@ -4,6 +4,7 @@ using AppStream.DurablePatterns.Steps;
 using Microsoft.Azure.Functions.Worker;
 using Moq;
 using System.Text.Json;
+using static AppStream.DurablePatterns.Tests.ActivityFunctionTests;
 
 namespace AppStream.DurablePatterns.Tests
 {
@@ -107,9 +108,10 @@ namespace AppStream.DurablePatterns.Tests
                 _result = result;
             }
 
-            public Task<MyPatternActivityResult> RunAsync(MyPatternActivityInput input)
+            public Task<PatternActivityResult<MyPatternActivityResult>> RunAsync(MyPatternActivityInput input)
             {
-                return Task.FromResult(_result ?? new MyPatternActivityResult());
+                return Task.FromResult(
+                    new PatternActivityResult<MyPatternActivityResult>(_result ?? new MyPatternActivityResult(), null));
             }
         }
     }
