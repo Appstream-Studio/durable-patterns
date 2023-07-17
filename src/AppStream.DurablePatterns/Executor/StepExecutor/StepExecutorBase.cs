@@ -26,7 +26,9 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor
             {
                 return Task.FromResult(
                     new StepExecutionResult(
-                        null, 
+                        step.PatternActivityTypeAssemblyQualifiedName,
+                        null,
+                        null,
                         context.CurrentUtcDateTime - Started, 
                         step.StepId, 
                         StepType, 

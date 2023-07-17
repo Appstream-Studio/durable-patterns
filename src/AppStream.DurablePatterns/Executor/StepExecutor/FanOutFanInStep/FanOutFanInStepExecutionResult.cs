@@ -1,10 +1,11 @@
-﻿using AppStream.DurablePatterns.Builder;
-using AppStream.DurablePatterns.Steps;
+﻿using AppStream.DurablePatterns.Steps;
 
 namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
 {
     internal record FanOutFanInStepExecutionResult(
+        string PatternActivityType,
         object? Result,
+        object?[] Outputs,
         TimeSpan Duration,
         Guid StepId,
         StepType StepType,
@@ -14,5 +15,5 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep
         TimeSpan? AverageBatchProcessingDuration,
         TimeSpan? AverageItemProcessingDuration,
         int? BatchesProcessed,
-        int? ItemsProcessed) : StepExecutionResult(Result, Duration, StepId, StepType, Succeeded, Exception);
+        int? ItemsProcessed) : StepExecutionResult(PatternActivityType, Result, Outputs, Duration, StepId, StepType, Succeeded, Exception);
 }

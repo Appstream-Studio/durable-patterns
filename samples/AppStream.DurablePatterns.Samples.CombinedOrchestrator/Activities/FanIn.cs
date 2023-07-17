@@ -14,7 +14,7 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             _logger = logger;
         }
 
-        public Task<FooItem[]> RunAsync(List<FooItem> allItems)
+        public Task<PatternActivityResult<FooItem[]>> RunAsync(List<FooItem> allItems)
         {
             _logger.LogInformation("this block of code is executed in a single activity function");
             foreach (var item in allItems)
@@ -23,7 +23,9 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             }
 
             _logger.LogInformation("this is the last activity; orchestration finished");
-            return Task.FromResult(allItems.ToArray());
+            return Task.FromResult(new PatternActivityResult<FooItem[]>(
+                allItems.ToArray(),
+                new { itemsProcessedCount = allItems.Count }));
         }
     }
 }

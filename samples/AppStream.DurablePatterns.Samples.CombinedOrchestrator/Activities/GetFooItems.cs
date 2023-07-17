@@ -18,10 +18,12 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities
             _logger = logger;
         }
 
-        public Task<List<FooItem>> RunAsync(object? input)
+        public async Task<PatternActivityResult<List<FooItem>>> RunAsync(object? input)
         {
             _logger.LogInformation("getting foo items from repository");
-            return _repository.GetFooItemsAsync();
+            var items = await _repository.GetFooItemsAsync();
+
+            return new PatternActivityResult<List<FooItem>>(items, new { itemsFetchedCount = items.Count });
         }
     }
 }

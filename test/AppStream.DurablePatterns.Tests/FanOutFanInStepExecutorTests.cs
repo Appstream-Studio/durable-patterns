@@ -101,6 +101,7 @@ namespace AppStream.DurablePatterns.Tests
                     It.IsAny<TaskOptions?>()))
                 .ReturnsAsync(new ActivityFunctionResult(
                     JsonSerializer.SerializeToElement(new List<string>() { "1", "2", "3" }),
+                    null,
                     TimeSpan.Zero));
 
             // Act
@@ -134,6 +135,7 @@ namespace AppStream.DurablePatterns.Tests
                     It.IsAny<TaskOptions?>()))
                 .ReturnsAsync((TaskName functionName, ActivityFunctionInput functionInput, TaskOptions options) => new ActivityFunctionResult(
                     JsonSerializer.SerializeToElement(functionInput.ActivityInput!),
+                    null,
                     TimeSpan.Zero));
 
             // Act
@@ -170,6 +172,7 @@ namespace AppStream.DurablePatterns.Tests
                     It.IsAny<TaskOptions?>()))
                 .ReturnsAsync((TaskName functionName, ActivityFunctionInput functionInput, TaskOptions options) => new ActivityFunctionResult(
                     JsonSerializer.SerializeToElement(((List<string>)functionInput.ActivityInput!).Concat((List<string>)functionInput.ActivityInput!)),
+                    null,
                     TimeSpan.Zero));
 
             // Act
@@ -185,9 +188,9 @@ namespace AppStream.DurablePatterns.Tests
 
         public class MyPatternActivity : IPatternActivity<List<string>, List<string>>
         {
-            public Task<List<string>> RunAsync(List<string> input)
+            public Task<PatternActivityResult<List<string>>> RunAsync(List<string> input)
             {
-                return Task.FromResult(input);
+                return Task.FromResult(new PatternActivityResult<List<string>>(input, null));
             }
         }
     }

@@ -53,7 +53,10 @@ namespace AppStream.DurablePatterns.ActivityFunctions
             var patternActivity = _patternActivityFactory.Create<TActivityInput, TActivityResult>(patternActivityType);
             var result = await patternActivity.RunAsync(input);
 
-            return new ActivityFunctionResult(result!, sw.Elapsed);
+            return new ActivityFunctionResult(
+                result.Value!, 
+                result.Output, 
+                sw.Elapsed);
         }
     }
 }

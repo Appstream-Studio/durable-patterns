@@ -26,7 +26,9 @@ namespace AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep
             var activityResult = jTokenResult.Deserialize(patternActivityResultType);
 
             return new StepExecutionResult(
+                step.PatternActivityTypeAssemblyQualifiedName,
                 activityResult,
+                result.Output,
                 context.CurrentUtcDateTime - Started,
                 step.StepId,
                 StepType,
