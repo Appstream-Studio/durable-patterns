@@ -55,6 +55,7 @@ namespace AppStream.DurablePatterns.Executor
                 context.SetCustomStatus(outputs);
             }
 
+            context.SetCustomStatus(null);
             return new ExecutionResult(outputs);
         }
 

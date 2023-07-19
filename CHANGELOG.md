@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] - 2023-07-19
+
+### Changed
+
+- Custom status set to null just before finishing orchestration so the information is not duplicated.
+
 ## [3.0.1] - 2023-07-19
 
 ### Added
 
-- Completed steps' outputs are now displayed as orchestrator custom status
+- Completed steps' outputs are now displayed as orchestrator custom status.
 
 ## [3.0.0] - 2023-07-17
 
