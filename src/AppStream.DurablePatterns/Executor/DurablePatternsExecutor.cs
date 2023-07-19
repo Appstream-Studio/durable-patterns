@@ -24,12 +24,13 @@ namespace AppStream.DurablePatterns.Executor
                 throw new ArgumentNullException(nameof(steps));
             }
 
-            if (!steps.Any()) 
+            if (!steps.Any())
             {
                 throw new ArgumentException("Steps collection cannot be empty.", nameof(steps));
             }
 
             var results = new Stack<StepExecutionResult>();
+            var outputs = new List<StepExecutionResultSummary>();
 
             foreach (var step in steps)
             {
@@ -44,37 +45,40 @@ namespace AppStream.DurablePatterns.Executor
                 if (!stepResult.Succeeded)
                 {
                     throw new PatternActivityFailedException(
-                        step.PatternActivityTypeAssemblyQualifiedName, 
+                        step.PatternActivityTypeAssemblyQualifiedName,
                         stepResult.Exception!);
                 }
 
                 results.Push(stepResult);
+                outputs.Add(ResultToOutput(stepResult));
+
+                context.SetCustomStatus(outputs);
             }
 
-            var resultsSummaries = results
-                .Select(r => r switch
-                {
-                    FanOutFanInStepExecutionResult res => new FanOutFanInStepExecutionResultSummary(
-                        res.StepType.ToString(),
-                        res.PatternActivityType,
-                        res.Output,
-                        res.Duration,
-                        res.Options,
-                        res.AverageBatchProcessingDuration,
-                        res.AverageItemProcessingDuration,
-                        res.BatchesProcessed,
-                        res.ItemsProcessed),
+            return new ExecutionResult(outputs);
+        }
 
-                    StepExecutionResult res => new StepExecutionResultSummary(
-                        res.StepType.ToString(),
-                        res.PatternActivityType,
-                        res.Output,
-                        res.Duration)
-                })
-                .Reverse()
-                .ToList();
+        private static StepExecutionResultSummary ResultToOutput(StepExecutionResult r)
+        {
+            return r switch
+            {
+                FanOutFanInStepExecutionResult res => new FanOutFanInStepExecutionResultSummary(
+                    res.StepType.ToString(),
+                    res.PatternActivityType,
+                    res.Output,
+                    res.Duration,
+                    res.Options,
+                    res.AverageBatchProcessingDuration,
+                    res.AverageItemProcessingDuration,
+                    res.BatchesProcessed,
+                    res.ItemsProcessed),
 
-            return new ExecutionResult(resultsSummaries);
+                StepExecutionResult res => new StepExecutionResultSummary(
+                    res.StepType.ToString(),
+                    res.PatternActivityType,
+                    res.Output,
+                    res.Duration)
+            };
         }
     }
 }
