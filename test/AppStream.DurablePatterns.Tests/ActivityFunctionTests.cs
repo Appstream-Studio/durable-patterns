@@ -40,6 +40,7 @@ namespace AppStream.DurablePatterns.Tests
                 patternActivityType.AssemblyQualifiedName!,
                 inputType.AssemblyQualifiedName!,
                 resultType.AssemblyQualifiedName!,
+                null,
                 null);
             var functionInput = new ActivityFunctionInput(stepConfiguration, ActivityInput: null);
 
@@ -67,6 +68,7 @@ namespace AppStream.DurablePatterns.Tests
                 patternActivityType.AssemblyQualifiedName!,
                 inputType.AssemblyQualifiedName!,
                 resultType.AssemblyQualifiedName!,
+                null,
                 null);
             var functionInput = new ActivityFunctionInput(stepConfiguration, serializedInput);
             var expectedActivityResult = new MyPatternActivityResult { Property3 = "result3", Property4 = true };

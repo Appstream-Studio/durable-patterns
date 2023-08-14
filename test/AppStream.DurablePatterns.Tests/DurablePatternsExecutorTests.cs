@@ -3,6 +3,7 @@ using AppStream.DurablePatterns.Executor.StepExecutor;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
 using AppStream.DurablePatterns.Steps;
 using Microsoft.DurableTask;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace AppStream.DurablePatterns.Tests
@@ -17,7 +18,7 @@ namespace AppStream.DurablePatterns.Tests
         public void SetUp()
         {
             _stepExecutorFactoryMock = new Mock<IStepExecutorFactory>();
-            _executor = new DurablePatternsExecutor(_stepExecutorFactoryMock.Object);
+            _executor = new DurablePatternsExecutor(new Mock<ILogger<DurablePatternsExecutor>>().Object, _stepExecutorFactoryMock.Object);
         }
 
         [Test]
@@ -55,7 +56,8 @@ namespace AppStream.DurablePatterns.Tests
                     typeof(SampleActivity).AssemblyQualifiedName!,
                     typeof(string).AssemblyQualifiedName!,
                     typeof(int).AssemblyQualifiedName!,
-                    new FanOutFanInOptions(10, 5))
+                    new FanOutFanInOptions(10, 5),
+                    null)
             };
 
             var failedStepResult = new StepExecutionResult(

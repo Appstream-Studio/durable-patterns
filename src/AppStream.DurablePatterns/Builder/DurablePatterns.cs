@@ -1,5 +1,6 @@
 ﻿using AppStream.DurablePatterns.Builder.ContractResolver;
 using AppStream.DurablePatterns.Executor;
+using AppStream.DurablePatterns.Executor.StepExecutor.MonitorStep;
 using AppStream.DurablePatterns.Steps;
 using AppStream.DurablePatterns.Steps.ConfigurationValidator;
 using Microsoft.DurableTask;
@@ -43,12 +44,18 @@ namespace AppStream.DurablePatterns.Builder
             => _executor.ExecuteAsync(_steps, Context);
 
         public IDurablePatternsContinuation FanOutFanIn<TActivity>(FanOutFanInOptions options) where TActivity : IPatternActivity
-            => RunActivityInternal<TActivity>(StepType.FanOutFanIn, options);
+            => RunActivityInternal<TActivity>(StepType.FanOutFanIn, options, null);
 
         public IDurablePatternsContinuation RunActivity<TActivity>() where TActivity : IPatternActivity
-            => RunActivityInternal<TActivity>(StepType.ActivityFunction, null);
+            => RunActivityInternal<TActivity>(StepType.ActivityFunction, null, null);
 
-        private IDurablePatternsContinuation RunActivityInternal<TActivity>(StepType stepType, FanOutFanInOptions? options)
+        public IDurablePatternsContinuation Monitor<TActivity, TActivityInput, TActivityResult>(Func<TActivityResult, bool> shouldStop, int pollingIntervalSeconds, TimeSpan expiry) where TActivity : IPatternActivity<TActivityInput, TActivityResult>
+            => RunActivityInternal<TActivity>(StepType.Monitor, null, new MonitorOptions(pollingIntervalSeconds, expiry, shouldStop));
+
+        public IDurablePatternsContinuation Monitor<TActivity, TActivityResult>(Func<TActivityResult, bool> shouldStop, int pollingIntervalSeconds, TimeSpan expiry) where TActivity : IPatternActivity<TActivityResult>
+            => RunActivityInternal<TActivity>(StepType.Monitor, null, new MonitorOptions(pollingIntervalSeconds, expiry, shouldStop));
+
+        private IDurablePatternsContinuation RunActivityInternal<TActivity>(StepType stepType, FanOutFanInOptions? fanOutFanInOptions, MonitorOptions? monitorOptions)
         {
             var stepId = Context.NewGuid();
             if (!_steps.Any(s => s.StepId == stepId))
@@ -60,7 +67,8 @@ namespace AppStream.DurablePatterns.Builder
                     typeof(TActivity).AssemblyQualifiedName!,
                     activityContract.InputType.AssemblyQualifiedName!,
                     activityContract.ResultType.AssemblyQualifiedName!,
-                    options);
+                    fanOutFanInOptions,
+                    monitorOptions);
 
                 _stepValidator.Validate(stepConfiguration, _steps.LastOrDefault());
                 _steps.Add(stepConfiguration);

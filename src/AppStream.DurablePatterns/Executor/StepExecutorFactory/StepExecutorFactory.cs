@@ -1,6 +1,7 @@
 ﻿using AppStream.DurablePatterns.Executor.StepExecutor;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
+using AppStream.DurablePatterns.Executor.StepExecutor.MonitorStep;
 using AppStream.DurablePatterns.Steps;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,7 @@ namespace AppStream.DurablePatterns.Executor.StepExecutorFactory
             {
                 StepType.ActivityFunction => GetRequiredService<ActivityFunctionStepExecutor>(),
                 StepType.FanOutFanIn => GetRequiredService<FanOutFanInStepExecutor>(),
+                StepType.Monitor => GetRequiredService<MonitorStepExecutor>(),
                 _ => throw new StepTypeNotSupportedException(stepType),
             };
 

@@ -31,6 +31,7 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(string).AssemblyQualifiedName!,
                 typeof(string).AssemblyQualifiedName!,
+                null,
                 null);
             var input = "test input";
             var expectedResult = "test result";
