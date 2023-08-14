@@ -1,6 +1,8 @@
 using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Activities;
+using AppStream.DurablePatterns.Samples.CombinedOrchestrator.Repository;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.DurableTask;
+using System;
 using System.Threading.Tasks;
 
 namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator
@@ -26,6 +28,7 @@ namespace AppStream.DurablePatterns.Samples.CombinedOrchestrator
                     BatchSize: 2,
                     ParallelActivityFunctionsCap: 2))
                 .RunActivity<FanIn>()
+                .Monitor<Monitor, FooItem[], MonitorResult>(r => r.Enough, 3, TimeSpan.FromSeconds(60))
                 .ExecuteAsync();
         }
     }

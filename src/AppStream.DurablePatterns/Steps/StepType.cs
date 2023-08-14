@@ -3,6 +3,7 @@
     public enum StepType
     {
         ActivityFunction,
-        FanOutFanIn
+        FanOutFanIn,
+        Monitor
     }
 }

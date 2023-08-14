@@ -4,6 +4,8 @@ using AppStream.DurablePatterns.Executor;
 using AppStream.DurablePatterns.Executor.StepExecutor.ActivityFunctionStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep;
 using AppStream.DurablePatterns.Executor.StepExecutor.FanOutFanInStep.OptionsValidator;
+using AppStream.DurablePatterns.Executor.StepExecutor.MonitorStep;
+using AppStream.DurablePatterns.Executor.StepExecutor.MonitorStep.OptionsValidator;
 using AppStream.DurablePatterns.Executor.StepExecutorFactory;
 using AppStream.DurablePatterns.Steps.ConfigurationValidator;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +33,9 @@ namespace AppStream.DurablePatterns
                 .AddScoped<IPatternActivityFactory, PatternActivityFactory>()
                 .AddScoped<ActivityFunctionStepExecutor>()
                 .AddScoped<FanOutFanInStepExecutor>()
-                .AddScoped<IFanOutFanInOptionsValidator, FanOutFanInOptionsValidator>();
+                .AddScoped<IFanOutFanInOptionsValidator, FanOutFanInOptionsValidator>()
+                .AddScoped<MonitorStepExecutor>()
+                .AddScoped<IMonitorOptionsValidator, MonitorOptionsValidator>();
 
             configure(new DurablePatternsConfiguration(services));
 

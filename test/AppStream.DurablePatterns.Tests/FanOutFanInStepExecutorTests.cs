@@ -31,7 +31,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
-                new FanOutFanInOptions(1, 1));
+                new FanOutFanInOptions(1, 1),
+                null);
 
             var context = Mock.Of<TaskOrchestrationContext>();
 
@@ -50,7 +51,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(string).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
-                new FanOutFanInOptions(1, 1));
+                new FanOutFanInOptions(1, 1),
+                null);
 
             var context = Mock.Of<TaskOrchestrationContext>();
             var input = "not a collection";
@@ -70,7 +72,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
                 typeof(string).AssemblyQualifiedName!,
-                new FanOutFanInOptions(1, 1));
+                new FanOutFanInOptions(1, 1),
+                null);
 
             var context = Mock.Of<TaskOrchestrationContext>();
             var input = new List<string>();
@@ -90,7 +93,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
-                new FanOutFanInOptions(3, 1));
+                new FanOutFanInOptions(3, 1),
+                null);
             var input = new List<string>() { "1", "2", "3" };
 
             var contextMock = new Mock<TaskOrchestrationContext>();
@@ -124,7 +128,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName!,
-                new FanOutFanInOptions(2, 1));
+                new FanOutFanInOptions(2, 1),
+                null);
             var input = new List<string>() { "1", "2", "3", "4", "5", "6", "7" };
 
             var contextMock = new Mock<TaskOrchestrationContext>();
@@ -160,7 +165,8 @@ namespace AppStream.DurablePatterns.Tests
                 typeof(MyPatternActivity).AssemblyQualifiedName!,
                 typeof(List<string>).AssemblyQualifiedName! ,
                 typeof(List<string>).AssemblyQualifiedName!,
-                new FanOutFanInOptions(2, 1));
+                new FanOutFanInOptions(2, 1),
+                null);
             var input = new List<string>() { "1", "2", "3", "4", "5", "6", "7" };
             var expectedResult = new List<string>() { "1", "1", "2", "2", "3", "3", "4", "4", "5", "5", "6", "6", "7", "7" };
 
