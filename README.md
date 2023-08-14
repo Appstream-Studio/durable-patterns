@@ -139,7 +139,7 @@ internal class MyOrchestrator
 - [ ] Updating orchestration status during execution
 - [ ] Support for lambdas instead of explicit `IPatternActivity` implementations
 - [ ] Naming the activities for easier debugging
-- [ ] Add support for [Monitoring](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp-inproc#monitoring) pattern
+- [x] Add support for [Monitoring](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp-inproc#monitoring) pattern
 - [ ] Add support for [Human interaction](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp-inproc#human) pattern
 
 ## Contributing
