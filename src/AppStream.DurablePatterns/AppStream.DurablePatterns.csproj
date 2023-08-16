@@ -8,7 +8,7 @@
 		<RootNamespace>AppStream.DurablePatterns</RootNamespace>
 		<MajorVersion>3</MajorVersion>
 		<MinorVersion>1</MinorVersion>
-		<PatchVersion>0</PatchVersion>
+		<PatchVersion>1</PatchVersion>
 		<Version>$(MajorVersion).$(MinorVersion).$(PatchVersion)</Version>
 		<FileVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</FileVersion>
 	</PropertyGroup>
