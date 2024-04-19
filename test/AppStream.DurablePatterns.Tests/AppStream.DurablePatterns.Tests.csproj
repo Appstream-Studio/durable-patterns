@@ -24,4 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AppStream.DurablePatterns\AppStream.DurablePatterns.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+  </ItemGroup>
 </Project>
