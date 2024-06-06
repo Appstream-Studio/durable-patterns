@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2024-06-06
+
+## Fixed
+
+- `FanOutFanIn<T>(...)` failing on empty collection ([#21](https://github.com/Appstream-Studio/durable-patterns/issues/21))
+
 ## [3.1.0] - 2023-08-14
 
 ### Added
